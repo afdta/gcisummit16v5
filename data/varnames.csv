@@ -1,0 +1,178 @@
+"varid","vars","cat","label"
+"v1","rank_300","Economic characteristics","GDP rank, (year?)"
+"v2","gmm14_2005_pop","Economic characteristics","Population, 2005"
+"v3","gmm14_2015_pop","Economic characteristics","Population, 2015"
+"v4","tot_emp2005","Economic characteristics","Employment, 2005"
+"v5","tot_emp2015","Economic characteristics","Employment, 2015"
+"v6","gmm14_2005_nomgdp","Economic characteristics","Nominal GDP, 2005"
+"v7","gmm14_2015_nomgdp","Economic characteristics","Nominal GDP, 2015"
+"v8","gmm14_2000_realgdp","Economic characteristics","Real GDP, 2000"
+"v9","gmm14_2005_realgdp","Economic characteristics","Real GDP, 2005"
+"v10","gmm14_2015_realgdp","Economic characteristics","Real GDP, 2015"
+"v11","gdp_pc_real2000","Economic characteristics","Real GDP per capita, 2000"
+"v12","gdp_pc_real2005","Economic characteristics","Real GDP per capita, 2005"
+"v13","gdp_pc_real2015","Economic characteristics","Real GDP per capita, 2015"
+"v14","productivity2005","Economic characteristics","GDP per worker (?), 2005"
+"v15","productivity2015","Economic characteristics","GDP per worker (?), 2005"
+"v16","share_population_laborforce15","Economic characteristics","Share of pop in the labor force, 2015"
+"v17","share_population_laborforce05","Economic characteristics","Share of pop in the labor force, 2005"
+"v18","compound_growth_realgdp15","Economic characteristics","Annual average percent change in real GDP (yrs?)"
+"v19","compound_growth_real_gdp_pc15","Economic characteristics","Annual average percent change in real GDP per capita (yrs?)"
+"v20","compound_growth_emp15","Economic characteristics","Annual average percent change in employment (yrs?)"
+"v21","compound_growth_pop15","Economic characteristics","Annual average percent change in pop (yrs?)"
+"v22","compound_growth_producti_15","Economic characteristics","Annual average percent change in real GDP per worker (yrs?)"
+"v23","comp_growth_realgdp00_07","Economic characteristics","Annual average percent change in real GDP, 2000 to 2007"
+"v24","comp_growth_real_gdp_pc00_07","Economic characteristics","Annual average percent change in real GDP per capita, 2000 to 2007"
+"v25","comp_growth_emp00_07","Economic characteristics","Annual average percent change in employment, 2000 to 2007"
+"v26","comp_growth_realgdp08_10","Economic characteristics","Annual average percent change in real GDP, 2008 to 2010"
+"v27","comp_growth_real_gdp_pc08_10","Economic characteristics","Annual average percent change in real GDP per capita, 2008 to 2010"
+"v28","comp_growth_emp08_10","Economic characteristics","Annual average percent change in employment, 2008 to 2010"
+"v29","comp_growth_realgdp10_15","Economic characteristics","Annual average percent change in real GDP, 2010 to 2015"
+"v30","comp_growth_real_gdp_pc10_15","Economic characteristics","Annual average percent change in real GDP per capita, 2010 to 2015"
+"v31","comp_growth_emp10_15","Economic characteristics","Annual average percent change in employment, 2010 to 2015"
+"v32","share_rgva2005business","Industrial structure",
+"v33","share_rgva2005commodities","Industrial structure",
+"v34","share_rgva2005construction","Industrial structure",
+"v35","share_rgva2005local","Industrial structure",
+"v36","share_rgva2005manufacturing","Industrial structure",
+"v37","share_rgva2005trade","Industrial structure",
+"v38","share_rgva2005transportation","Industrial structure",
+"v39","share_rgva2005utilities","Industrial structure",
+"v40","share_rgva2000business","Industrial structure",
+"v41","share_rgva2000commodities","Industrial structure",
+"v42","share_rgva2000construction","Industrial structure",
+"v43","share_rgva2000local","Industrial structure",
+"v44","share_rgva2000manufacturing","Industrial structure",
+"v45","share_rgva2000trade","Industrial structure",
+"v46","share_rgva2000transportation","Industrial structure",
+"v47","share_rgva2000utilities","Industrial structure",
+"v48","share_rgva2015business","Industrial structure",
+"v49","share_rgva2015commodities","Industrial structure",
+"v50","share_rgva2015construction","Industrial structure",
+"v51","share_rgva2015local","Industrial structure",
+"v52","share_rgva2015manufacturing","Industrial structure",
+"v53","share_rgva2015trade","Industrial structure",
+"v54","share_rgva2015transportation","Industrial structure",
+"v55","share_rgva2015utilities","Industrial structure",
+"v56","sector_prod2005business","Industrial structure",
+"v57","sector_prod2005commodities","Industrial structure",
+"v58","sector_prod2005construction","Industrial structure",
+"v59","sector_prod2005local","Industrial structure",
+"v60","sector_prod2005manufacturing","Industrial structure",
+"v61","sector_prod2005trade","Industrial structure",
+"v62","sector_prod2005transportation","Industrial structure",
+"v63","sector_prod2005utilities","Industrial structure",
+"v64","sec_gr_prod_0015business","Industrial structure",
+"v65","sec_gr_prod_0015commodities","Industrial structure",
+"v66","sec_gr_prod_0015construction","Industrial structure",
+"v67","sec_gr_prod_0015local","Industrial structure",
+"v68","sec_gr_prod_0015manufacturing","Industrial structure",
+"v69","sec_gr_prod_0015trade","Industrial structure",
+"v70","sec_gr_prod_0015transportation","Industrial structure",
+"v71","sec_gr_prod_0015utilities","Industrial structure",
+"v72","rgva_growth0007business","Industrial structure",
+"v73","rgva_growth0007commodities","Industrial structure",
+"v74","rgva_growth0007construction","Industrial structure",
+"v75","rgva_growth0007local","Industrial structure",
+"v76","rgva_growth0007manufacturing","Industrial structure",
+"v77","rgva_growth0007trade","Industrial structure",
+"v78","rgva_growth0007transportation","Industrial structure",
+"v79","rgva_growth0007utilities","Industrial structure",
+"v80","rgva_growth0810business","Industrial structure",
+"v81","rgva_growth0810commodities","Industrial structure",
+"v82","rgva_growth0810construction","Industrial structure",
+"v83","rgva_growth0810local","Industrial structure",
+"v84","rgva_growth0810manufacturing","Industrial structure",
+"v85","rgva_growth0810trade","Industrial structure",
+"v86","rgva_growth0810transportation","Industrial structure",
+"v87","rgva_growth0810utilities","Industrial structure",
+"v88","rgva_growth1015business","Industrial structure",
+"v89","rgva_growth1015commodities","Industrial structure",
+"v90","rgva_growth1015construction","Industrial structure",
+"v91","rgva_growth1015local","Industrial structure",
+"v92","rgva_growth1015manufacturing","Industrial structure",
+"v93","rgva_growth1015trade","Industrial structure",
+"v94","rgva_growth1015transportation","Industrial structure",
+"v95","rgva_growth1015utilities","Industrial structure",
+"v96","sec_gr_emp_0015business","Industrial structure",
+"v97","sec_gr_emp_0015commodities","Industrial structure",
+"v98","sec_gr_emp_0015construction","Industrial structure",
+"v99","sec_gr_emp_0015local","Industrial structure",
+"v100","sec_gr_emp_0015manufacturing","Industrial structure",
+"v101","sec_gr_emp_0015trade","Industrial structure",
+"v102","sec_gr_emp_0015transportation","Industrial structure",
+"v103","sec_gr_emp_0015utilities","Industrial structure",
+"v104","sec_gr_gdp_0015business","Industrial structure",
+"v105","sec_gr_gdp_0015commodities","Industrial structure",
+"v106","sec_gr_gdp_0015construction","Industrial structure",
+"v107","sec_gr_gdp_0015local","Industrial structure",
+"v108","sec_gr_gdp_0015manufacturing","Industrial structure",
+"v109","sec_gr_gdp_0015trade","Industrial structure",
+"v110","sec_gr_gdp_0015transportation","Industrial structure",
+"v111","sec_gr_gdp_0015utilities","Industrial structure",
+"v112","share_emp2000business","Industrial structure",
+"v113","share_emp2000commodities","Industrial structure",
+"v114","share_emp2000construction","Industrial structure",
+"v115","share_emp2000local","Industrial structure",
+"v116","share_emp2000manufacturing","Industrial structure",
+"v117","share_emp2000trade","Industrial structure",
+"v118","share_emp2000transportation","Industrial structure",
+"v119","share_emp2000utilities","Industrial structure",
+"v120","share_emp2015business","Industrial structure","Share of employment in business, 2015"
+"v121","share_emp2015commodities","Industrial structure","Share of employment in commodities, 2015"
+"v122","share_emp2015construction","Industrial structure","Share of employment in construction, 2015"
+"v123","share_emp2015local","Industrial structure","Share of employment in local services, 2015"
+"v124","share_emp2015manufacturing","Industrial structure","Share of employment in manufacturing, 2015"
+"v125","share_emp2015trade","Industrial structure","Share of employment in trade, 2015"
+"v126","share_emp2015transportation","Industrial structure","Share of employment in transportation, 2015"
+"v127","share_emp2015utilities","Industrial structure","Share of employment in utilities, 2015"
+"v128","sector_prod2015business","Industrial structure",
+"v129","sector_prod2015commodities","Industrial structure",
+"v130","sector_prod2015construction","Industrial structure",
+"v131","sector_prod2015local","Industrial structure",
+"v132","sector_prod2015manufacturing","Industrial structure",
+"v133","sector_prod2015trade","Industrial structure",
+"v134","sector_prod2015transportation","Industrial structure",
+"v135","sector_prod2015utilities","Industrial structure",
+"v136","share_tradable2000","Trade","Share tradable (jobs?), 2000"
+"v137","share_tradable2015","Trade","Share tradable (jobs?), 2015"
+"v138","growth_tradable0015","Trade","Growth in tradable (jobs?), 2000 to 2015"
+"v139","gmm14_2009_pop","Economic characteristics",
+"v140","gmm14_2011_pop","Economic characteristics",
+"v141","tot_emp2009","Economic characteristics",
+"v142","fdi_stockvalue15","Trade","FDI value, 2015"
+"v143","fdi_stockjobs15","Trade","FDI jobs, 2015"
+"v144","fdi_stockvalue09","Trade","FDI value, 2009"
+"v145","fdi_stockjobs09","Trade","FDI jobs, 2009"
+"v146","fdi_stockvalue11","Trade","FDI value, 2011"
+"v147","fdi_stockjobs11","Trade","FDI jobs, 2011"
+"v148","fdipc09","Trade","FDI per capita, 2009"
+"v149","fdipc15","Trade","FDI per capita, 2015"
+"v150","fdipc11","Trade","FDI per capita, 2011"
+"v151","fdipc_gr11_15","Trade","FDI per capita growth, 2011 to 2015"
+"v152","stock_gr_11_15","Trade","FDI value growth, 2011 to 2015"
+"v153","mean_citation_score09","Innovation","Mean citation score, 2009"
+"v154","share_top10publications_1013","Innovation","Share of total publications in top 10 percent of cited papers, 2010 to 2013"
+"v155","mean_citation_score13","Innovation","Mean citation score, 2013"
+"v156","patent07","Innovation","Patents, 2007"
+"v157","patent12","Innovation","Patents, 2012"
+"v158","patentspc07","Innovation","Patents per capita, 2007"
+"v159","patentspc12","Innovation","Patents per capita, 2012"
+"v160","share_national_patents07","Innovation","Metro share of national patents, 2007"
+"v161","share_national_patents12","Innovation","Metro share of national patents, 2012"
+"v162","stockvc06","Innovation","Value of VC, 2006"
+"v163","stockvc10","Innovation","Value of VC, 2010"
+"v164","stockvc15","Innovation","Value of VC, 2015"
+"v165","vcpc06","Innovation","VC per capita, 2006"
+"v166","vcpc10","Innovation","VC per capita, 2010"
+"v167","vcpc15","Innovation","VC per capita, 2015"
+"v168","vcpc_gr","Innovation","VC per capita growth (years?)"
+"v169","stock_vc_gr10_15","Innovation","VC growth, 2010 to 2015"
+"v170","pass04","Infrastructure","Total aviation passengers, 2004"
+"v171","pass15","Infrastructure","Total aviation passengers, 2015"
+"v172","passengerspc04","Infrastructure","Aviation passengers per capita, 2004"
+"v173","passengerspc15","Infrastructure","Aviation passengers per capita, 2015"
+"v174","down08","Infrastructure","Download speed, 2008"
+"v175","down15","Infrastructure","Download speed, 2015"
+"v176","sharepop_tertiaryeducation","Talent","Share of pop. 15+ with tertiary education, 2014 (or latest year)"
+"v177","share_foreignborn_15","Talent","Foreign-born share of total population, latest year available"
