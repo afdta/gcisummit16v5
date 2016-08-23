@@ -38,12 +38,15 @@ median_ <- function(chunk){return(median(chunk, na.rm=TRUE))}
 
 predicate <- function(x){return(is.numeric(x) & !is.integer(x))}
 zs <- gci3[c(1,2,9:25)] %>% mutate_if(predicate, scaleChunk)
-minmax <- zs[3:19] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 meanz <- zs[2:19] %>% group_by(label_cluster) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+meanz$id <- paste0("grpavg",meanz$label_cluster)
+ns <- zs %>% group_by(label_cluster) %>% summarise(n())
+
+minmax <- zs[3:19] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 minmax <- meanz[2:18] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 min(unlist(minmax))
 max(unlist(minmax))
-meanz$id <- paste0("grpavg",meanz$label_cluster)
+
 
 meanvals <- gci3[c(2,9:25)] %>% group_by(label_cluster) %>% summarise_all(funs(mean(., na.rm=TRUE)))
 
