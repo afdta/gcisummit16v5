@@ -96,10 +96,10 @@
 	height:100%;
 	height:calc(100vh - 100px);
 	
-	border:1px solid #ffffff;
-	border-width:2px 0px 2px 0px;
+	border:0px solid #ffffff;
 
 	left:0px;
+	z-index:100;
 }
 
 #gci2016wrap svg{

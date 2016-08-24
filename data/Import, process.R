@@ -3,6 +3,7 @@ library("dplyr")
 library("ggplot2")
 library("tidyr")
 library("jsonlite")
+library("rgdal")
 
 #gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/cluster_indicators_alec_063016.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), fileEncoding="latin1")
 #ll <- geocode(paste0(gci$metro,", ",gci$country), "latlona")
@@ -16,7 +17,10 @@ gci2$id <- paste0("m",1:nrow(gci2))
 
 gci3 <- gci2[c(26, 25, 4, 5, 6, 1, 2, 7:24)]
 
+#shape files
+world <- readOGR(dsn="/home/alec/Projects/Brookings/gci-summit-2016/data/ne_110m_admin_0_countries/", layer="ne_110m_admin_0_countries", stringsAsFactors=FALSE)
 
+writeOGR(world2, "/home/alec/Projects/Brookings/gci-summit-2016/", layer="", driver="GeoJSON")
 
 #growth of fdi??
 #keyvars <- gci2[c(4,6,1,2,7,9,13,21,22,24,25,26,27,28,148,149,155,157,158,)]
