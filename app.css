@@ -43,6 +43,13 @@
 	background-color:#e0e0e0;
 }
 
+#gci2016wrap .gcisection{
+	margin:20px 0px;
+}
+
+/*clearfix this class*/
+.gcisection::after{content:""; display:table; clear:both;}
+
 
 #gci2016banner .title-box{
     -ms-transform: translate(0px, 2em);
@@ -68,17 +75,35 @@
 	position:relative;
 	margin:0px auto;
 	padding:1px 3%;
+
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
 }
 
-#gci2016wrap .content.mw1280{max-width:1280px;}
+#gci2016wrap .content.mw1280{max-width:1280px; padding:0px;}
+#gci2016wrap .content.mw1600{max-width:1600px; padding:0px;}
 
 #gci2016wrap .reading{line-height:1.75em;max-width:760px;}
 #gci2016wrap .reading p:first-child{margin-top:2em;}
 
-#gci2016wrap .dotplot{min-height:600px; min-height:100vh; margin:10px 0px 30px 0px;}
+#gci2016wrap .dotplot{min-height:600px; min-height:100vh;}
 
-#gci2016wrap .dotplot p{text-align:center; margin:0px 3em 1em 3em;}
-#gci2016wrap .dotplot p:first-child{font-size:1.55em;margin:5px 3em 0.5em 3em;}
+#gci2016wrap .dotplot p{text-align:left; margin:0px 0em 1em 0em;}
+#gci2016wrap .dotplot p:first-child{font-size:1.55em;margin:5px 0em 0.5em 0em;}
+
+#gci2016wrap .left-col{
+	float:left;
+	margin:0px 0px 0px 3%;
+	width:57%;
+	max-width:1000px;
+}
+
+#gci2016wrap .right-col{
+	float:left;
+	width:35%;
+	margin-left:5%;
+}
 
 
 #gci2016fixedframewrap{

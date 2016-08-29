@@ -19,12 +19,18 @@
 
 		for(var e in sections){
 			if(sections.hasOwnProperty(e)){
-				scope.scroll.register(sections[e], scope.dotPlot.call(sections[e], e.replace(/[a-z]*/, ""), dat))
+				scope.scroll.register(sections[e], scope.dotPlot.call(sections[e], e.replace(/[a-z]*/, ""), dat), function(c){})
 			}
 		}
 
 		gci2016.data = dat;
 
+		//build a version of the data for the map
+		gci2016.map.data = dat.vals.metros.map(function(d,i,a){
+			return {id:d.id, metro:d.metro, country:d.country, cluster:d.label_cluster, lonlat:[d.lon, d.lat], vals:d}
+		});
+
+		gci2016.map.indicator = "X2015_nomgdp";
 		gci2016.map.draw();
 	});
 
@@ -35,7 +41,6 @@
 
 		gci2016.map.geojson = topojson.feature(dat, dat.objects.countries);
 
-		console.log(gci2016.map.geojson);
 		gci2016.map.draw();
 	});	
 

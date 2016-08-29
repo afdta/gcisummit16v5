@@ -18,9 +18,8 @@ gci2$id <- paste0("m",1:nrow(gci2))
 gci3 <- gci2[c(26, 25, 4, 5, 6, 1, 2, 7:24)]
 
 #shape files
-world <- readOGR(dsn="/home/alec/Projects/Brookings/gci-summit-2016/data/ne_110m_admin_0_countries/", layer="ne_110m_admin_0_countries", stringsAsFactors=FALSE)
-
-writeOGR(world2, "/home/alec/Projects/Brookings/gci-summit-2016/", layer="", driver="GeoJSON")
+#world <- readOGR(dsn="/home/alec/Projects/Brookings/gci-summit-2016/data/ne_110m_admin_0_countries/", layer="ne_110m_admin_0_countries", stringsAsFactors=FALSE)
+#writeOGR(world2, "/home/alec/Projects/Brookings/gci-summit-2016/", layer="", driver="GeoJSON")
 
 #growth of fdi??
 #keyvars <- gci2[c(4,6,1,2,7,9,13,21,22,24,25,26,27,28,148,149,155,157,158,)]
@@ -43,7 +42,7 @@ median_ <- function(chunk){return(median(chunk, na.rm=TRUE))}
 predicate <- function(x){return(is.numeric(x) & !is.integer(x))}
 zs <- gci3[c(1,2,9:25)] %>% mutate_if(predicate, scaleChunk)
 meanz <- zs[2:19] %>% group_by(label_cluster) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-meanz$id <- paste0("grpavg",meanz$label_cluster)
+meanz$cluster <- meanz$label_cluster
 ns <- zs %>% group_by(label_cluster) %>% summarise(n())
 
 minmax <- zs[3:19] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 

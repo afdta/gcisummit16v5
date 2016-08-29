@@ -1,6 +1,6 @@
 
 //dotPlot is called with the enclosing dom container element as the this object
-gci2016.dotPlot = function(id, data){
+gci2016.dotPlot = function(cluster, data){
 	var box = this.getBoundingClientRect();
 	var wrapper = d3.select(this).classed("c-fix",true);
 	try{
@@ -23,7 +23,7 @@ gci2016.dotPlot = function(id, data){
 
 	var dat = vars.map(function(D,I,A){
 		var s = data.z.groups.map(function(d,i,a){
-			return {id:d.id.replace(/[a-z]*/,""), val:d[D], var:D}
+			return {cluster:d.cluster, val:d[D], var:D}
 		});
 		return s;
 	});
@@ -83,17 +83,25 @@ gci2016.dotPlot = function(id, data){
 
 	var dots = groups.selectAll("circle").data(function(d,i){return d}).enter().append("circle")
 				  .attr("cx",function(d,i){return (x(d.var)+halfstep)+"%"})
-				  .attr("cy",function(d,i){return y(d.val)})
+				  .attr("cy",function(d,i){return y(0)})
 				  .attr("fill","#999999")
 				  .attr("fill-opacity",0.4)
 				  .attr("stroke","#999999")
 				  .attr("r",5);
 
+	var cols = gci2016.cols;
 	var this_group = dots.filter(function(d,i){
-		return d.id == id;
-	}).raise().attr("fill","#ff0000").attr("stroke","#ff0000").attr("fill-opacity",0.6);
+		return d.cluster == cluster;
+	}).raise()
+	  .attr("fill-opacity",0.7)
+	  .attr("fill", function(d,i){return cols[d.cluster-1]})
+	  .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster-1]).darker()})
+	  .attr("r",10);
 
 	return function(){
-		this_group.transition().attr("r",10);
+		//this_group.transition().transition().duration(1000).attr("r",10);
+		dots.transition().duration(700)
+			.attr("cy",function(d,i){return y(d.val)})
+			//.attr("r",function(d,i){return d.cluster==cluster ? 10 : 5});
 	};		
 }
