@@ -17,6 +17,13 @@ gci2016.map.scale = 175; //base scale value, itself scaled in the size method be
 gci2016.map.indicator = null; //indicator used to scale circle radii
 gci2016.map.radius = 5; //defaults to a constant, but can also be a function
 
+
+//create 
+gci2016.map.setup = function(container, map_width){
+
+}
+
+
 //set map dimensions and redraw (if map has been initialized)
 gci2016.map.size = function(){
 	var width = gci2016.map.width = gci2016.dom.getwidth(1600);
@@ -183,3 +190,9 @@ gci2016.map.draw = function(){
 }
 
 window.addEventListener("resize", gci2016.map.draw);
+
+
+//DRAW SMALL SELF-CONTAINED MAPS
+gci2016.map.drawSmall = function(){
+
+}

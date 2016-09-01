@@ -94,8 +94,8 @@ gci2016.dotPlot = function(cluster, data){
 		return d.cluster == cluster;
 	}).raise()
 	  .attr("fill-opacity",0.7)
-	  .attr("fill", function(d,i){return cols[d.cluster-1]})
-	  .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster-1]).darker()})
+	  .attr("fill", function(d,i){return cols[d.cluster]})
+	  .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster]).darker()})
 	  .attr("r",10);
 
 	return function(){
