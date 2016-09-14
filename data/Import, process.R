@@ -1,21 +1,56 @@
 library("ggmap")
 library("dplyr")
 library("ggplot2")
-library("tidyr")
 library("jsonlite")
 library("rgdal")
 
-#gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/cluster_indicators_alec_063016.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), fileEncoding="latin1")
-#ll <- geocode(paste0(gci$metro,", ",gci$country), "latlona")
-#gci2 <- cbind(ll, gci)
+#produce a variable map
+nms <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=FALSE)
+formats <- c("id","id","id","rank","doll1","doll1","doll1","pct1",
+             "pct1","pct1","num1","doll1", "doll1","sh1","num1",
+             "doll1","sh1","num0","num0","id","id")
+
+nms2 <- as.data.frame(cbind(t(nms),formats)) 
+nms3 <- rbind(nms2, data.frame(V1=c("Longitude","Latitude"), formats=c("num5","num5"), row.names=c("V22","V23")))
+nms3$cat <- c(rep("id",4), rep("core",6), rep("trade",3), rep("inno",4), rep("connect",2), rep("id",4))
+
+nmsplit <- split(nms3, row.names(nms3))
+
+varlist <- lapply(nmsplit, function(e){
+  return(list(name=e$V1, format=e$formats, cat=e$cat))
+})
+
+#read in descriptions
+clusters$description <- readLines("~/Projects/Brookings/gci-summit-2016/data/Cluster descriptions.txt")
+names(clusters) <- c("cluster", "name", "num", "description")
+
+json_vars <- toJSON(list(vars=varlist, clusters=clusters), auto_unbox=TRUE)
+
+#writeLines(json, "/home/alec/Projects/Brookings/gci-summit-2016/data/vars.json")
+
+gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), skip=1, header=FALSE)
+gcisearch <- paste0(gci$V1, ", ", gci$V3)
+gcisearch[which(gcisearch == "Rotterdam-Amsterdam, Netherlands")] <- "Amsterdam, Netherlands" 
+
+ll1 <- geocode(gcisearch, "latlona")
+ll <- ll1[1:2]
+names(ll) <- c("V22","V23")
+
+#ll2 <- geocode(paste0(gci$V2,", ",gci$V3), "latlona")
+#names(ll1) <- paste0(names(ll1),"1")
+#names(ll2) <- paste0(names(ll2),"2")
+#ll <- cbind(gci[c("V1","V3")],ll1, ll2)
+#ll$lond <- abs(ll$lon1-ll$lon2)
+#ll$latd <- abs(ll$lat1-ll$lat2)
+#llnm <- filter(ll, lond > 1 | latd > 1)
+
+gci2 <- cbind(gci,ll)
 #saveRDS(gci2, file="~/Projects/Brookings/gci-summit-2016/data/slimmed_version.RDS")
 
-gci2 <- readRDS(file = "~/Projects/Brookings/gci-summit-2016/data/slimmed_version.RDS")
+#gci2 <- readRDS(file = "~/Projects/Brookings/gci-summit-2016/data/slimmed_version.RDS")
 #vars <- read.csv(file = "~/Projects/Brookings/gci-summit-2016/data/varnames.csv", na.strings=c("na",""),row.names=NULL, stringsAsFactors=FALSE)
 
 gci2$id <- paste0("m",1:nrow(gci2))
-
-gci3 <- gci2[c(26, 25, 4, 5, 6, 1, 2, 7:24)]
 
 #shape files
 #world <- readOGR(dsn="/home/alec/Projects/Brookings/gci-summit-2016/data/ne_110m_admin_0_countries/", layer="ne_110m_admin_0_countries", stringsAsFactors=FALSE)
@@ -36,33 +71,42 @@ gci3 <- gci2[c(26, 25, 4, 5, 6, 1, 2, 7:24)]
 scaleChunk <- function(chunk){
   return(as.numeric(scale(chunk)))
 }
-mean_ <- function(chunk){return(mean(chunk, na.rm=TRUE))}
-median_ <- function(chunk){return(median(chunk, na.rm=TRUE))}
 
 predicate <- function(x){return(is.numeric(x) & !is.integer(x))}
-zs <- gci3[c(1,2,9:25)] %>% mutate_if(predicate, scaleChunk)
-meanz <- zs[2:19] %>% group_by(label_cluster) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-meanz$cluster <- meanz$label_cluster
-ns <- zs %>% group_by(label_cluster) %>% summarise(n())
 
-minmax <- zs[3:19] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
-minmax <- meanz[2:18] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
+zs <- gci2[5:20] %>% mutate_if(predicate, scaleChunk)
+sum(zs$V20 == gci2$V20)
+
+meanz <- zs %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+grpmeans <- gci2[5:20] %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+
+clusters <- gci2 %>% group_by(V20,V21) %>% summarise(num=n())
+
+minmax <- zs[1:15] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
+minmax <- meanz[2:16] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 min(unlist(minmax))
 max(unlist(minmax))
 
-
-meanvals <- gci3[c(2,9:25)] %>% group_by(label_cluster) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-
 final <- list(vals=list(), z=list())
-final$vals$metros <- gci3
-final$vals$groups <- meanvals
+final$vals$metros <- gci2
+final$vals$groups <- grpmeans
 final$z$metros <- zs
 final$z$groups <- meanz
 
 finalJ <- toJSON(final, digits=5)
 
-writeLines(finalJ, con="~/Projects/Brookings/gci-summit-2016/data.json")
+final <- c('{\n"meta":', json_vars, ',\n"data":', finalJ, '\n}\n')
 
+writeLines(final, con="~/Projects/Brookings/gci-summit-2016/data.json", sep="")
+
+jin <- readLines("~/Projects/Brookings/gci-summit-2016/data.json")
+
+fromJ <- fromJSON(jin)
+json_vars2 <- toJSON(fromJ$meta, auto_unbox=TRUE)
+json_vars2==json_vars
+
+finalJ2 <- toJSON(fromJ$data, digits=5)
+finalJ==finalJ2
 
 ggplot(zs, aes(x=z)) + geom_histogram() + facet_wrap(~variable)
 ggplot(zs, aes(x=label_cluster, y=z)) + geom_point() + facet_wrap(~variable)

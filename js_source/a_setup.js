@@ -7,30 +7,13 @@ gci2016.repo = "./";
 //hold dom references/methods
 gci2016.dom = {};
 gci2016.dom.wrap = d3.select("#gci2016wrap");
+gci2016.dom.wrapn = gci2016.dom.wrap.node();
 gci2016.dom.fixedframewrap = d3.select("#gci2016fixedframewrap");
 gci2016.dom.fixedframe = d3.select("#gci2016fixedframe");
 gci2016.dom.mapwrap = d3.select("#gci2016mapwrap");
 
 //colors for each cluster 1-7 
 gci2016.cols = ['#cccccc','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f'];
-
-//get/record wrapper width, in pixels -- fallback is 950px
-gci2016.dom.getwidth = function(maxwidth){
-	try{
-		var box = gci2016.dom.wrap.node().getBoundingClientRect();
-		var w = box.right - box.left;
-	}
-	catch(e){
-		var w = 950;
-	}
-
-	//override if user passes a maxwidth
-	if(!!maxwidth && w > maxwidth){w = maxwidth}
-	
-	gci2016.dom.width = w; //record width
-	
-	return w;
-}
 
 //register arbitrary scroll events
 gci2016.scroll = {}
@@ -104,4 +87,147 @@ gci2016.scroll.activateListeners = function(){
 		}
 	},0);
 		
+}
+
+//get element width, height, in pixels
+//in future, ensure this is run in next tick of event loop using setTimeout(0) and native promises, if supported
+gci2016.getdim = function(el, maxwidth, maxheight){
+	if(arguments.length > 0){
+		var element = el;
+	}
+	else{
+		var element = document.documentElement;
+	}
+
+	var floor = 50;
+	var err = false;
+
+	try{
+		var box = element.getBoundingClientRect();
+		var w = Math.floor(box.right - box.left);
+		var h = Math.floor(box.bottom - box.top);
+		if(w < floor || h < floor){throw "badWidth"}
+	}
+	catch(e){
+		var box = {};
+		var w = floor;
+		var h = floor;
+		err = true;
+	}
+
+	if(!!maxwidth && w > maxwidth){w = maxwidth}
+	if(!!maxheight && h > maxheight){h = maxheight}
+
+	var dim = {width:w, height:h, error:err, box:box};
+
+	return dim;
+}
+
+//place tooltip relative to container; 
+//xbuffer is how far left or right the tooltip is from the targetXY (mouse/touch position)
+//fbr is the fixed banner height (or vertical distance at the top of the viewport that should be considered off limits)
+gci2016.placetip = function(tip_node, container_node, xbuffer, fbr){
+	
+	//default to showing tooltip on right, don't flip orientations unless forced
+	var tipRight = true;
+	var pad = !!xbuffer ? xbuffer : 35;
+	fbr = !!fbr ? fbr : 85;
+
+	try{
+		if(tip_node.style.width == ""){
+			tip_node.style.width = "320px";
+		};
+	}
+	catch(e){
+		//no-op
+	}
+
+	var xy = function(target_xy){
+		var tipdim = gci2016.getdim(tip_node);
+		var contdim = gci2016.getdim(container_node);
+
+		var mouseX = target_xy[0];
+		var mouseY = target_xy[1];
+
+		var errorX = false;
+
+		try{
+			var wdiff = contdim.width - tipdim.width;
+			if(wdiff > 0 && wdiff < pad){
+				pad = wdiff;
+			}
+			else if(wdiff < 0){
+				pad = 0;
+			}
+
+			if(tipRight){
+				if((mouseX + tipdim.width + pad) > contdim.width){
+					tipRight = false;
+					var newX = mouseX - tipdim.width - pad;
+				}
+				else{
+					var newX = mouseX + pad;
+				}
+			}
+			else{
+				if((mouseX - tipdim.width - pad) < 0){
+					tipRight = true;
+					var newX = mouseX + pad;
+				}
+				else{
+					var newX = mouseX - tipdim.width - pad;
+				}
+			}
+
+			if((newX + tipdim.width) >= contdim.width || newX < 0){throw "tooWide"}
+		}
+		catch(e){
+			var newX = 0;
+			errorX = true;
+		}
+
+		//y pos
+		try{
+			if(errorX){throw "badX"}
+
+			var viewport = {};
+			viewport.w = Math.max(document.documentElement.clientWidth, (window.innerWidth || 0));
+			viewport.h = Math.max(document.documentElement.clientHeight, (window.innerHeight || 0));
+
+			var hdiff = viewport.h - tipdim.height - fbr;
+			
+			var quarterh = Math.round(tipdim.height/4);
+			if(hdiff > quarterh){
+				var ypad = quarterh;
+			}
+			else if(hdiff >= 0){
+				var ypad = hdiff;
+			}
+			else{
+				var ypad = 0;
+			}
+
+			//console.log("container top: " +  contdim.box.top + " | mouse-y: " + mouseY + " | tip height: " + tipdim.height + " | ypad: " +ypad);
+			//remember: mouseY is relative to the top of container 
+
+			//condition 1: tooltip is taller than viewport or it would extend into fbr
+
+			if(tipdim.height+fbr >= viewport.h || contdim.box.top + mouseY - ypad <= fbr){
+				var newY = fbr-contdim.box.top;
+			}
+			else if((contdim.box.top + mouseY + tipdim.height - ypad) > viewport.h){
+				var newY = viewport.h - contdim.box.top - tipdim.height;
+			}
+			else{
+				var newY = mouseY - ypad;
+			}
+		}
+		catch(e){
+			var newY = mouseY + 15;
+		}
+
+		return [newX, newY];
+	}
+
+	return xy;
 }
