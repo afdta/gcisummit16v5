@@ -2,7 +2,8 @@
 	var scope = gci2016;
 	var dom = scope.dom;
 
-	var dotplots = d3.selectAll("div.dotplot");
+	var dotplots = d3.select("#dotplots").selectAll("div.dotplot").data([4,3,2,0,1,5,6])
+					 .enter().append("div").classed("dotplot gcisection",true);
 
 	//signature for map setup: function(container, map_width, register_resize, render_as_canvas)
 	//notes set a max width : 
@@ -64,24 +65,24 @@
 			var group = thiz.append("div").classed("c-fix cluster-group-description",true);
 
 			var title = group.append("p").classed("cluster-title",true);
-				title.insert("div").style("background-color", gci2016.cols[text[i].cluster]);
-				title.insert("span").text(text[i].name).style("vertical-align","middle");
+				title.insert("div").style("background-color", gci2016.cols[text[d].cluster]);
+				title.insert("span").text(text[d].name).style("vertical-align","middle");
 				
 			var map = group.append("div").classed("right-col small-map",true);
-			var mapObject = gci2016.map.setup(map.node(), sm_width_fn, true, true).draw(4, text[i].cluster);
+			var mapObject = gci2016.map.setup(map.node(), sm_width_fn, true, true).draw(4, text[d].cluster);
 
-			var description = group.selectAll("p.reading").data([text[i].description]);
+			var description = group.selectAll("p.reading").data([text[d].description]);
 				description.enter().append("p").classed("reading",true)
 											   .classed("zero-top-margin", function(d,i){return i==0})
 											   .text(function(d,i){return d})
 												;
 
-			thiz.append("p").text(text[i].name + " by the numbers").style("margin","20px 0px 0px 3%").style("font-weight","bold").style("font-size","1em");
-			thiz.append("p").text("Average group performance on indicators that describe the position of metro areas in the global economy. [need language]").style("margin","0.5em 0px 30px 3%");
+			thiz.append("p").text(text[d].name + " by the numbers").style("margin","20px 0px 0px 3%").style("font-weight","bold").style("font-size","1em");
+			thiz.append("p").text("Average group performance on select indicators").style("margin","0.5em 0px 30px 3%");
 
 			var plot = thiz.append("div");
 
-			scope.scroll.register(plot.node(), scope.dotPlot.call(plot.node(), text[i].cluster, gci2016.data), function(c){});
+			scope.scroll.register(plot.node(), scope.dotPlot.call(plot.node(), text[d].cluster, gci2016.data), function(c){});
 			scope.scroll.register(map.node(), mapObject.filter);
 		});
 	}	

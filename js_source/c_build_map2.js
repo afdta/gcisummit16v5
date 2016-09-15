@@ -9,7 +9,7 @@ gci2016.map.geojson = null;
 gci2016.map.setup = function(container, map_width, register_resize, render_as_canvas){
 	var scope = {};
 
-	scope.aspect = 0.5;
+	scope.aspect = 0.48;
 	scope.width = 950;
 	scope.height = scope.aspect*scope.width;
 
@@ -483,13 +483,24 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			//close.on("mousedown", scope.hideTable);
 
+
+			var titleBox = scope.wrapMenu.append("div")
+							.style("margin","5em 0px 0px 0px")
+							.style("border-top","0px solid #dddddd");
+			titleBox.append("p").text("Mapping the 123 largest global cities")
+						.style("font-weight","bold")
+						.style("font-size","1.25em")
+						.style("margin","0px")
+
 			
 			var toggle_buttons = scope.wrapMenu.append("div").style("display","inline-block")
 											   .classed("disable-highlight",true)
 											   .style("padding","0px")
 											   .style("margin-top","25px")
 											   .style("border","1px solid #aaaaaa")
-											   .style("border-width","0px 0px 0px 0px");
+											   .style("border-width","0px 0px 0px 0px")
+
+
 			var buttons = toggle_buttons.selectAll("div").data(["View data as: ","Map","Table"])
 									.enter().append("div").style("cursor",function(d,i){return i==0 ? "default" : "pointer"})
 									.style("padding","1px 6px").style("float","left")

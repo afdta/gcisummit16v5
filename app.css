@@ -27,7 +27,7 @@
 	background: -webkit-linear-gradient(to left, #EDE574 , #E1F5C4); /* Chrome 10-25, Safari 5.1-6 */
 	background: linear-gradient(to left, #EDE574 , #E1F5C4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 	  
-	background: url(./photo-1463406579420-4938d6b220bc.jpg);
+	background: url(./photo.jpg);
 	background-size: 100% auto;
 	background-size: cover;
 	background-repeat:no-repeat;  
@@ -119,6 +119,52 @@
 #gci2016wrap .content.mw820{max-width:820px;}
 #gci2016wrap .content.mw1280{max-width:1280px;}
 #gci2016wrap .content.mw1600{max-width:1600px;}
+
+#gci2016wrap .three-col-grid, #gci2016wrap .three-col-grid div{
+	webkit-box-sizing: border-box;
+	moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+#gci2016wrap .three-col-grid{
+	padding:0px 3%;
+	margin-top:3em;
+}
+
+#gci2016wrap .three-col-grid > div:before, 
+#gci2016wrap .three-col-grid > div:after{
+	display:block;
+	width:1px;
+	height:1px;
+	content:"";
+}
+
+#gci2016wrap .three-col-grid > div{
+	padding: 0px;
+}
+
+#gci2016wrap .three-col-grid .left-col{
+	width:23%;
+	float:left;
+}
+#gci2016wrap .three-col-grid .right-col{
+	width:23%;
+	float:right;
+
+}
+#gci2016wrap .three-col-grid .center-col{
+	width:54%;
+	float:left;
+	padding:0px 3%;
+}
+#gci2016wrap .three-col-grid .center-col > div{
+	margin:0px auto;
+	max-width:850px;
+}
+
+
+#gci2016wrap .three-col-grid *:first-child{
+	margin-top:0px;
+}
 
 /*.reading no longer applies to containers*/
 #gci2016wrap .reading{line-height:1.75em; clear:left;}

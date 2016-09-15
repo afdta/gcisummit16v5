@@ -13,11 +13,12 @@ formats <- c("id","id","id","rank","doll1","doll1","doll1","pct1",
 nms2 <- as.data.frame(cbind(t(nms),formats)) 
 nms3 <- rbind(nms2, data.frame(V1=c("Longitude","Latitude"), formats=c("num5","num5"), row.names=c("V22","V23")))
 nms3$cat <- c(rep("id",4), rep("core",6), rep("trade",3), rep("inno",4), rep("connect",2), rep("id",4))
+nms3$varid <- row.names(nms3)
 
-nmsplit <- split(nms3, row.names(nms3))
+nmsplit <- split(nms3, nms3$varid)
 
 varlist <- lapply(nmsplit, function(e){
-  return(list(name=e$V1, format=e$formats, cat=e$cat))
+  return(list(name=e$V1, format=e$formats, cat=e$cat, varid=e$varid))
 })
 
 #read in descriptions
