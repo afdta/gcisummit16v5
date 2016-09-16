@@ -336,7 +336,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					scope.drawHighlights(attr);
 
 					var dat = gci2016.data_vars.map(function(D,I,A){
-						return {name:D.name, val:d.vals[D.varid]}
+						return {name:D.nameshort, val:d.vals[D.varid]}
 					});
 
 					//same basic code as from charts

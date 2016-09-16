@@ -5,10 +5,20 @@ gci2016.dotPlot = function(cluster, dat){
 	var wrapper = d3.select(this).classed("c-fix",true);
 	var error = false;
 	var data = dat.data;
+	var zrange = [-1.7,3.5];
+
+	try{
+		var thisBox = this.getBoundingClientRect();
+		var width = thisBox.right - thisBox.left;
+		var landscape = width > 780 ? true : false;
+	}
+	catch(e){
+		var landscape = false;
+		var width = 480;
+	}
 
 	//var width = gci2016.getdim(thiz).width;
 	var height = 270;
-	var zrange = [-1.7,3.5]
 
 	var metrodat = d3.nest().key(function(d,i){return ("c"+d.V20)})
 					 .object(data.vals.metros)[("c"+cluster)];
@@ -38,7 +48,7 @@ gci2016.dotPlot = function(cluster, dat){
 		return {dat:s, var:D.varid, varname:D.name, metros:m};
 	});
 
-	var x = d3.scaleBand().domain(gci2016.data_vars.map(function(d,i){return d.varid})).range([0,100]).round(false).paddingOuter(1).align(0.5);
+	var x = d3.scaleBand().domain(gci2016.data_vars.map(function(d,i){return d.varid})).range([0,100]).round(false).paddingOuter(0.2).align(0.5);
 	var y = d3.scaleLinear().domain(zrange).range([height, 0]);
 
 	var po = x.paddingOuter();
@@ -90,11 +100,11 @@ gci2016.dotPlot = function(cluster, dat){
 		.style("width",step+"%")
 		.style("overflow","hidden");
 	labels.select("p")
-			.text(function(d,i){return d.name})
-			.style("word-break","keep-all")
+			.text(function(d,i){return d.nameshort})
 			.style("text-align","center")
 			.style("font-size","13px")
-			.style("margin","0px 4px");
+			.style("margin","0px 4px")
+			.style("word-break","nromal");
 
 	var categories_update = category_container.selectAll("div").data([]);
 	var categories_enter = categories_update.enter().append("div").style("height","100%");

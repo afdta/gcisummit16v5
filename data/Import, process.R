@@ -4,6 +4,18 @@ library("ggplot2")
 library("jsonlite")
 library("rgdal")
 
+#core data
+gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), skip=1, header=FALSE)
+
+#supplementary pop
+pop <- read.csv("~/Projects/Brookings/gci-summit-2016/data/archive/cluster_indicators_alec_063016.csv", stringsAsFactors=FALSE, fileEncoding = "latin1")[c("metro","country","pop_2015")]
+names(pop) <- c("V1", "V3", "V0")
+
+gci <- merge(gci, pop, by=c("V1","V3"), all.x=TRUE)
+V21 <- ifelse(gci$V21=="Knowledge Centers", "Knowledge Capitals", gci$V21)
+gci[gci$V21!=V21, "V21"]
+gci$V21 <- V21
+
 #produce a variable map
 nms <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=FALSE)
 formats <- c("id","id","id","rank","doll1","doll1","doll1","pct1",
@@ -11,17 +23,49 @@ formats <- c("id","id","id","rank","doll1","doll1","doll1","pct1",
              "doll1","sh1","num0","num0","id","id")
 
 nms2 <- as.data.frame(cbind(t(nms),formats)) 
-nms3 <- rbind(nms2, data.frame(V1=c("Longitude","Latitude"), formats=c("num5","num5"), row.names=c("V22","V23")))
-nms3$cat <- c(rep("id",4), rep("core",6), rep("trade",3), rep("inno",4), rep("connect",2), rep("id",4))
+nms3 <- rbind(nms2, data.frame(V1=c("Longitude","Latitude","Population"), formats=c("num5","num5","num0"), row.names=c("V22","V23","V0")))
+nms3$cat <- c(rep("id",4), 
+              rep("Economic characteristics",3),
+              rep("Economic growth",3),
+              rep("Tradable clusters",3), 
+              rep("Innovation",3),
+              rep("Talent",1),
+              rep("Connectivity",2), 
+              rep("id",4),
+              "Economic characteristics")
 nms3$varid <- row.names(nms3)
+nms3$short <- c("metro", "metro2", "country", "rank_300", "GDP", 
+                "GDP per capita", "Productivity", "GDP growth, 2000–15", 
+                "GDP per capita growth, 2000–15", "Productivity growth, 2000–15", 
+                "Traded sector productivity", "FDI per capita", 
+                "FDI", "Research citations", 
+                "Patents per capita", "VC per capita", 
+                "Higher ed. attainment", 
+                "Air passengers", "Internet speed", "cluster", 
+                "cluster name", "lon", "lat", "Population")
+nms3$long <- c("metro", "metro2", "country", "rank_300", "Nominal GDP, 2015", 
+  "Nominal GDP per capita, 2015", "Output per worker, 2015", "Annual average real GDP growth, 2000–2015", 
+  "Annual average real GDP per capita growth, 2000–2015", "Annual average real output per worker growth, 2000–2015", 
+  "Traded sector productivity differential, 2015", "Greenfield foreign direct investment per capita, 2009–2015", 
+  "Greenfield foreign direct investment, 2009–2015", "Share of publications in the top 10 percent of cited papers, 2010–2013", 
+  "Patents per capita, 2008–2012", "Venture capital investments per capita ($1000s), 2006–2015", 
+  "Share of population with tertiary education, most recent year", 
+  "Total aviation passengers, 2014", "Average internet download speed, 2015", "label_cluster", 
+  "cluster name", "Longitude", "Latitude", "Population")
+
+getNames <- function(varids){
+  pos <- match(varids, nms3$varid)
+  return(nms3[pos,"long"])
+}
 
 nmsplit <- split(nms3, nms3$varid)
 
 varlist <- lapply(nmsplit, function(e){
-  return(list(name=e$V1, format=e$formats, cat=e$cat, varid=e$varid))
+  return(list(name=e$long, nameshort=e$short, format=e$formats, cat=e$cat, varid=e$varid))
 })
 
 #read in descriptions
+clusters <- gci %>% group_by(V20,V21) %>% summarise(num=n())
 clusters$description <- readLines("~/Projects/Brookings/gci-summit-2016/data/Cluster descriptions.txt")
 names(clusters) <- c("cluster", "name", "num", "description")
 
@@ -29,13 +73,13 @@ json_vars <- toJSON(list(vars=varlist, clusters=clusters), auto_unbox=TRUE)
 
 #writeLines(json, "/home/alec/Projects/Brookings/gci-summit-2016/data/vars.json")
 
-gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), skip=1, header=FALSE)
+
 gcisearch <- paste0(gci$V1, ", ", gci$V3)
 gcisearch[which(gcisearch == "Rotterdam-Amsterdam, Netherlands")] <- "Amsterdam, Netherlands" 
 
 ll1 <- geocode(gcisearch, "latlona")
-ll <- ll1[1:2]
-names(ll) <- c("V22","V23")
+ll <- ll1
+names(ll) <- c("V22","V23","GeoSearch")
 
 #ll2 <- geocode(paste0(gci$V2,", ",gci$V3), "latlona")
 #names(ll1) <- paste0(names(ll1),"1")
@@ -75,16 +119,16 @@ scaleChunk <- function(chunk){
 
 predicate <- function(x){return(is.numeric(x) & !is.integer(x))}
 
-zs <- gci2[5:20] %>% mutate_if(predicate, scaleChunk)
+zs <- gci2[c(1,3,5:20,22)] %>% mutate_if(predicate, scaleChunk)
 sum(zs$V20 == gci2$V20)
 
 meanz <- zs %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-grpmeans <- gci2[5:20] %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+grpmeans <- gci2[c(5:20,22)] %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+meanz_tst <- grpmeans
+meanz_tst$z5 <- scale(meanz_tst$V5)
 
-clusters <- gci2 %>% group_by(V20,V21) %>% summarise(num=n())
-
-minmax <- zs[1:15] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
-minmax <- meanz[2:16] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
+minmax <- zs[c(1:15,17)] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
+minmax <- meanz[2:17] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 min(unlist(minmax))
 max(unlist(minmax))
 
@@ -108,6 +152,12 @@ json_vars2==json_vars
 
 finalJ2 <- toJSON(fromJ$data, digits=5)
 finalJ==finalJ2
+
+#testdf
+
+GCI <- gci2
+names(GCI) <- getNames(names(GCI))
+
 
 ggplot(zs, aes(x=z)) + geom_histogram() + facet_wrap(~variable)
 ggplot(zs, aes(x=label_cluster, y=z)) + geom_point() + facet_wrap(~variable)
