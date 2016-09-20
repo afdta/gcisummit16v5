@@ -119,7 +119,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			//build a mutable array of objects that hold original data (which should not be mutated)
 			if(!scope.data){
 				scope.data = gci2016.data.data.vals.metros.map(function(d,i,a){
-					return {id:d.id, metro:d.V1, country:d.V3, cluster:d.V20, lonlat:[d.V22, d.V23], vals:d}
+					return {id:d.id, metro:d.V1, country:d.V19, cluster:d.V2, lonlat:[d.V20, d.V21], vals:d}
 				});
 			}
 

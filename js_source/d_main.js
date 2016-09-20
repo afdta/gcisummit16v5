@@ -57,7 +57,7 @@
 	function initialDraw(){
 		var text = gci2016.data.meta.clusters;
 
-		bigmap.draw("V5").tooltip().addTable();
+		bigmap.draw("V4").tooltip().addTable();
 
 		dotplots.each(function(d,i){
 			var thiz = d3.select(this);

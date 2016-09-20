@@ -5,57 +5,57 @@ library("jsonlite")
 library("rgdal")
 
 #core data
-gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), skip=1, header=FALSE)
+gci <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data for interactive 091516.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), skip=1, header=FALSE)
 
 #supplementary pop
-pop <- read.csv("~/Projects/Brookings/gci-summit-2016/data/archive/cluster_indicators_alec_063016.csv", stringsAsFactors=FALSE, fileEncoding = "latin1")[c("metro","country","pop_2015")]
-names(pop) <- c("V1", "V3", "V0")
+pop <- read.csv("~/Projects/Brookings/gci-summit-2016/data/results_cluster_analysis_090616.csv", stringsAsFactors=FALSE)[c("metro", "country", "gmm14_2015_pop")]
+names(pop) <- c("V1", "V19", "V0")
 
-gci <- merge(gci, pop, by=c("V1","V3"), all.x=TRUE)
-V21 <- ifelse(gci$V21=="Knowledge Centers", "Knowledge Capitals", gci$V21)
-gci[gci$V21!=V21, "V21"]
-gci$V21 <- V21
+gci <- merge(gci, pop, by="V1")
+V3 <- ifelse(gci$V3=="Knowledge Centers", "Knowledge Capitals", gci$V3)
+gci[gci$V3!=V3, "V3"]
+gci$V3 <- V3
 
 #produce a variable map
-nms <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=FALSE)
-formats <- c("id","id","id","rank","doll1","doll1","doll1","pct1",
+nms <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data for interactive 091516.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=FALSE)
+formats <- c("id","id","id","doll1","doll1","doll1","pct1",
              "pct1","pct1","num1","doll1", "doll1","sh1","num1",
-             "doll1","sh1","num0","num0","id","id")
+             "doll1","sh1","num0","num0")
 
 nms2 <- as.data.frame(cbind(t(nms),formats)) 
-nms3 <- rbind(nms2, data.frame(V1=c("Longitude","Latitude","Population"), formats=c("num5","num5","num0"), row.names=c("V22","V23","V0")))
-nms3$cat <- c(rep("id",4), 
+nms3 <- rbind(nms2, data.frame(V1=c("Country","Longitude","Latitude","Population"), formats=c("id","num5","num5","num0"), row.names=c("V19","V20","V21","V0")))
+nms3$cat <- c(rep("id",3), 
               rep("Economic characteristics",3),
               rep("Economic growth",3),
               rep("Tradable clusters",3), 
               rep("Innovation",3),
               rep("Talent",1),
               rep("Connectivity",2), 
-              rep("id",4),
+              rep("id",3),
               "Economic characteristics")
 nms3$varid <- row.names(nms3)
-nms3$short <- c("metro", "metro2", "country", "rank_300", "GDP", 
+nms3$short <- c("metro", "cluster", "cluster name", "GDP", 
                 "GDP per capita", "Productivity", "GDP growth, 2000–15", 
                 "GDP per capita growth, 2000–15", "Productivity growth, 2000–15", 
                 "Traded sector productivity", "FDI per capita", 
                 "FDI", "Research citations", 
                 "Patents per capita", "VC per capita", 
                 "Higher ed. attainment", 
-                "Air passengers", "Internet speed", "cluster", 
-                "cluster name", "lon", "lat", "Population")
-nms3$long <- c("metro", "metro2", "country", "rank_300", "Nominal GDP, 2015", 
+                "Air passengers", "Internet speed", "Country", 
+                "lon", "lat", "Population")
+nms3$long <- c("metro", "cluster", "cluster name", "Nominal GDP, 2015", 
   "Nominal GDP per capita, 2015", "Output per worker, 2015", "Annual average real GDP growth, 2000–2015", 
   "Annual average real GDP per capita growth, 2000–2015", "Annual average real output per worker growth, 2000–2015", 
   "Traded sector productivity differential, 2015", "Greenfield foreign direct investment per capita, 2009–2015", 
   "Greenfield foreign direct investment, 2009–2015", "Share of publications in the top 10 percent of cited papers, 2010–2013", 
   "Patents per capita, 2008–2012", "Venture capital investments per capita ($1000s), 2006–2015", 
   "Share of population with tertiary education, most recent year", 
-  "Total aviation passengers, 2014", "Average internet download speed, 2015", "label_cluster", 
-  "cluster name", "Longitude", "Latitude", "Population")
+  "Total aviation passengers, 2014", "Average internet download speed, 2015", "Country", 
+  "Longitude", "Latitude", "Population")
 
-getNames <- function(varids){
+getNames <- function(varids, varname="long"){
   pos <- match(varids, nms3$varid)
-  return(nms3[pos,"long"])
+  return(nms3[pos, varname])
 }
 
 nmsplit <- split(nms3, nms3$varid)
@@ -65,7 +65,7 @@ varlist <- lapply(nmsplit, function(e){
 })
 
 #read in descriptions
-clusters <- gci %>% group_by(V20,V21) %>% summarise(num=n())
+clusters <- gci %>% group_by(V2,V3) %>% summarise(num=n())
 clusters$description <- readLines("~/Projects/Brookings/gci-summit-2016/data/Cluster descriptions.txt")
 names(clusters) <- c("cluster", "name", "num", "description")
 
@@ -74,12 +74,12 @@ json_vars <- toJSON(list(vars=varlist, clusters=clusters), auto_unbox=TRUE)
 #writeLines(json, "/home/alec/Projects/Brookings/gci-summit-2016/data/vars.json")
 
 
-gcisearch <- paste0(gci$V1, ", ", gci$V3)
+gcisearch <- paste0(gci$V1, ", ", gci$V19)
 gcisearch[which(gcisearch == "Rotterdam-Amsterdam, Netherlands")] <- "Amsterdam, Netherlands" 
 
 ll1 <- geocode(gcisearch, "latlona")
 ll <- ll1
-names(ll) <- c("V22","V23","GeoSearch")
+names(ll) <- c("V20","V21","GeoSearch")
 
 #ll2 <- geocode(paste0(gci$V2,", ",gci$V3), "latlona")
 #names(ll1) <- paste0(names(ll1),"1")
@@ -90,6 +90,8 @@ names(ll) <- c("V22","V23","GeoSearch")
 #llnm <- filter(ll, lond > 1 | latd > 1)
 
 gci2 <- cbind(gci,ll)
+
+gci2[gci2$V2==1, "V10"] <- NA #Factory China shouuld be missing
 #saveRDS(gci2, file="~/Projects/Brookings/gci-summit-2016/data/slimmed_version.RDS")
 
 #gci2 <- readRDS(file = "~/Projects/Brookings/gci-summit-2016/data/slimmed_version.RDS")
@@ -110,6 +112,12 @@ gci2$id <- paste0("m",1:nrow(gci2))
 
 #write.csv(data.frame(vars=unique(m$variable)), file="~/Projects/Brookings/gci-summit-2016/data/varnames.csv", row.names = FALSE)
 
+#pre-tabbed z-scores
+zpre <- read.csv("~/Projects/Brookings/gci-summit-2016/data/zscores_091516.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"))
+
+order <- names(read.csv("~/Projects/Brookings/gci-summit-2016/data/data for interactive 091516.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=TRUE))[-1]
+names(zpre)
+
 #run summaries by variable and by variable crossed with label cluster
 
 #function to compute z score and return result as numeric -- summarise fails with scaled vectors -- presumably because they contain additional attributes... or the mean method dispatches differently...
@@ -119,15 +127,13 @@ scaleChunk <- function(chunk){
 
 predicate <- function(x){return(is.numeric(x) & !is.integer(x))}
 
-zs <- gci2[c(1,3,5:20,22)] %>% mutate_if(predicate, scaleChunk)
-sum(zs$V20 == gci2$V20)
+zs <- gci2 %>% mutate_at(c(4:18,20), scaleChunk)
+sum(zs$V2 == gci2$V2)
 
-meanz <- zs %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-grpmeans <- gci2[c(5:20,22)] %>% group_by(V20) %>% summarise_all(funs(mean(., na.rm=TRUE)))
-meanz_tst <- grpmeans
-meanz_tst$z5 <- scale(meanz_tst$V5)
+meanz <- zs[c(2,4:18,20)] %>% group_by(V2) %>% summarise_all(funs(mean(., na.rm=TRUE)))
+grpmeans <- gci2[c(2,4:18,20)] %>% group_by(V2) %>% summarise_all(funs(mean(., na.rm=TRUE)))
 
-minmax <- zs[c(1:15,17)] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
+minmax <- zs[c(4:18,20)] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 minmax <- meanz[2:17] %>% summarise_all(funs(max=max(., na.rm=TRUE), min=min(., na.rm=TRUE))) 
 min(unlist(minmax))
 max(unlist(minmax))
@@ -154,6 +160,33 @@ finalJ2 <- toJSON(fromJ$data, digits=5)
 finalJ==finalJ2
 
 #testdf
+
+meanz_tst <- meanz
+names(meanz_tst) <- getNames(names(meanz_tst))
+
+zmerge <- merge(zpre, meanz_tst, by.x="Cluster_label", by.y="cluster")
+vdiff <- function(a,b){
+  max <- max(abs(zmerge[,a] - zmerge[,b]), na.rm=TRUE)
+  return(max)
+}
+vdiff(3,18)
+vdiff(4,19)
+vdiff(5,20)
+vdiff(6,21)
+vdiff(7,22)
+vdiff(8,23)
+vdiff(9,24) #names(zmerge)[c(9,24)]
+
+vdiff(11,25)
+vdiff(10,26)
+vdiff(12,27)
+vdiff(13,28)
+vdiff(14,29) #names(zmerge)[c(14,29)]
+vdiff(15,30)
+vdiff(16,31)
+vdiff(17,32)
+
+write.csv(zmerge[c(1,9,24,14,29)],"~/Desktop/meanz.csv")
 
 GCI <- gci2
 names(GCI) <- getNames(names(GCI))

@@ -231,3 +231,90 @@ gci2016.placetip = function(tip_node, container_node, xbuffer, fbr){
 
 	return xy;
 }
+
+
+gci2016.calc_rank = function(array, accessor, ascending){
+	var A = !!accessor ? accessor : function(d){return d};
+	var D = !!ascending ? false : true;
+	var R = array.map(function(d,i,a){
+		return accessor(d);
+	});
+	R.sort(function(a,b){
+		try{
+			var d = a-b;
+			if(d==null){throw "NaN"}
+		}
+		catch(e){
+			var d = 0;
+		}
+
+		try{
+			if(a==b){
+				var r = 0;
+			}
+			else if(a==null){
+				var r = 1;
+			}
+			else if(b==null){
+				var r = -1;
+			}
+			else if(a<b){
+				var r = D ? 1 : -1;
+			}
+			else if(a>b){
+				var r = D ? -1 : 1;
+			}
+			else{
+				var r = 0;
+			}
+		}
+		catch(e){
+			var r = 0;
+		}
+
+		return r;
+	});
+
+    var rankit = function(value){
+	    try{
+	        var i = R.indexOf(value) + 1;
+	        var rank = (i>0 && value!=null) ? i : "N/A";
+	    }
+	    catch(e){
+	        if(!Array.prototype.indexOf){
+	            var rank = "N/A";
+	        }
+	        else{
+	            var rank = "N/A";
+	        }
+	    }
+	    finally{
+	        return rank;
+	    }
+	}
+
+	return rankit;
+}
+
+
+gci2016.format = {};
+gci2016.format.rank = function(r){
+    if(typeof r === "undefined" || r == null){
+    	var rth = "N/A";
+    }
+    else{
+        //keep int versions
+        var num = r;
+        var mod = r%100; //for ranks beyond 100
+ 
+        //coerce to string
+        var r = r + "";
+        var f = +(r.substring(r.length-1)); //take last letter and coerce to an integer
+         
+        //typical suffixes
+        var e = ["th","st","nd","rd","th","th","th","th","th","th"];
+ 
+        var rth = (mod>10 && mod<20) ? r + "th" : (r + e[f]); //handles exceptions for X11th, X12th, X13th, X14th
+    }
+    return rth; 
+ }
