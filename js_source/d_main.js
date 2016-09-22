@@ -27,11 +27,21 @@
 			return null;
 		}
 		gci2016.data = dat;
+		gci2016.rankFns = {};
+
+		var vals = dat.data.vals.metros;
 
 		var data_vars = [];
 		for(var v in dat.meta.vars){
 			if(dat.meta.vars.hasOwnProperty(v) && dat.meta.vars[v].cat !== "id"){
 				data_vars.push(dat.meta.vars[v]);
+				try{
+					//build ranking functions that can rank against all metros or a particular cluster
+					gci2016.rankFns[v] = gci2016.calc_rank(vals, function(d){return d[v]}, function(d){return d.V2});
+				}
+				catch(e){
+					gci2016.rankFns[v] = function(v){return 0}
+				}
 			}
 		}
 		data_vars.sort(function(a,b){
@@ -68,7 +78,7 @@
 				title.insert("div").style("background-color", gci2016.cols[text[d].cluster]);
 				title.insert("span").text(text[d].name).style("vertical-align","middle");
 				
-			var map = group.append("div").classed("right-col small-map",true);
+			var map = group.append("div").classed("small-map",true);
 			var mapObject = gci2016.map.setup(map.node(), sm_width_fn, true, true).draw(4, text[d].cluster);
 
 			var description = group.selectAll("p.reading").data([text[d].description]);
@@ -78,7 +88,7 @@
 												;
 
 			thiz.append("p").text(text[d].name + " by the numbers").style("margin","20px 0px 0px 3%").style("font-weight","bold").style("font-size","1em");
-			thiz.append("p").text("Average group performance on select indicators").style("margin","0.5em 0px 30px 3%");
+			thiz.append("p").text("Average performance of each global city type on key competitiveness factors").style("margin","0.5em 0px 30px 3%");
 
 			var plot = thiz.append("div");
 

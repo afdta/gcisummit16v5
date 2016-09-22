@@ -15,7 +15,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 	//append another div as the wrapper so that the sizing is immune to padding of container
 	scope.outerWrap =  d3.select(container).append("div").style("position","relative").style("padding","0px");
-	scope.wrapMenu = scope.outerWrap.append("div").style("position","relative").style("margin","0px auto").style("text-align","center").classed("c-fix",true);
+	scope.wrapMenu = scope.outerWrap.append("div").style("position","relative").style("padding","0px 3%").classed("c-fix",true);
 	scope.wrap = scope.outerWrap.append("div").style("position","relative").style("padding","0px");
 	scope.canvas = scope.wrap.append("canvas").style("position","absolute").style("top","0px").style("left","0px");
 	scope.context = scope.canvas.node().getContext("2d");
@@ -69,7 +69,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var graticule = d3.geoGraticule();
 			context.beginPath();
 			scope.path(graticule());
-			context.strokeStyle="#cccccc";
+			context.strokeStyle="#efefef";
 			context.stroke();
 
 			context.strokeStyle="#aaaaaa";
@@ -119,7 +119,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			//build a mutable array of objects that hold original data (which should not be mutated)
 			if(!scope.data){
 				scope.data = gci2016.data.data.vals.metros.map(function(d,i,a){
-					return {id:d.id, metro:d.V1, country:d.V19, cluster:d.V2, lonlat:[d.V20, d.V21], vals:d}
+					return {id:d.id, metro:d.V1, country:d.V19, cluster:d.V2, cname:d.V3, lonlat:[d.V20, d.V21], vals:d}
 				});
 			}
 
@@ -290,7 +290,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
 										  .style("z-index",0)
-										  .style("pointer-events","none");
+										  .style("pointer-events","none")
+										  .classed("makesans",true);
 
 		var tipp = gci2016.placetip(tip.node(), scope.wrap.node());
 
@@ -321,13 +322,27 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			}
 
+			scope.mouseleave = function(){
+				tiptimer = setTimeout(function(){
+					tip.style("visibility","hidden")
+					   .style("z-index",0);
+					scope.drawHighlights();
+				}, 250);				
+			}
+
 			function mouse(xy){
-				clearTimeout(tiptimer);
-				var xyn = tipp(xy);
-				tip.style("visibility","visible")
-				   .style("z-index",101)
-				   .style("top",xyn[1]+"px")
-				   .style("left",xyn[0]+"px");
+				try{
+					if(scope.view == "Table"){throw "tableview"}
+					clearTimeout(tiptimer);
+					var xyn = tipp(xy);
+					tip.style("visibility","visible")
+					   .style("z-index",101)
+					   .style("top",xyn[1]+"px")
+					   .style("left",xyn[0]+"px");
+				}
+				catch(e){
+					scope.mouseleave();
+				}
 			}
 
 			function mouseenter(d, i){
@@ -335,29 +350,100 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var attr = {fill:thiz.attr("fill"), r:thiz.attr("r"), cx:thiz.attr("cx"), cy:thiz.attr("cy"), stroke:thiz.attr("stroke")};
 					scope.drawHighlights(attr);
 
+					//get ranking functions
+					//gci2016.calc_rank = function(array, accessor, ascending){
+
 					var dat = gci2016.data_vars.map(function(D,I,A){
-						return {name:D.nameshort, val:d.vals[D.varid]}
+						var rnkit = gci2016.rankFns[D.varid];
+						var val = d.vals[D.varid];
+						var valf = gci2016.format.fn(val, D.format);
+						var clusterRank = rnkit(val, d.cluster)
+
+						var row = [D.nameshort, 
+								   valf, 
+								   (rnkit(val).rank + (I==0 ? "/123" : "")), 
+								   (clusterRank.rank + (I==0 ? "/"+clusterRank.outof : ""))
+								   ];
+						row.number = I+1
+						return row;
 					});
 
+					var title = tip.selectAll("p.tip-title")
+									.data(["<b>"+d.metro+", "+d.country+"</b>", "Type: " + d.cname]);
+					title.enter().append("p").classed("tip-title",true)
+								 .merge(title).html(function(d,i){return d})
+								 .style("margin","0px 0px 5px 0px")
+								 .style("font-size",function(d,i){return i==0 ? "1.25em" : "0.8em"});
+
 					//same basic code as from charts
-					var rows = [{name:"<b>"+d.metro+", "+d.country+"</b>", val:""}].concat(dat);
+					var firstRow = ["Metric", "Value", "Overall", "Within type"];
+					firstRow.number = 0;
+					var rows = [firstRow].concat(dat);
 
-					var text = {};
-					text.u = tip.selectAll("div.table-row").data(rows);
-					text.e = text.u.enter().append("div").classed("table-row c-fix",true);
-					text.eu = text.e.merge(text.u);
-					text.eu.style("border",function(d,i){return i==0 ? "1px solid #aaaaaa" : "1px dotted #aaaaaa"})
-						   .style("padding",function(d,i){return i==0 ? "0px 0px 3px 0px" : "0px"})
-						   .style("border-width", "0px 0px 1px 0px");
+					var tableWrap = tip.selectAll("div.table-wrap").data([rows]);
 
-					var cells = {};
-					cells.u = text.eu.selectAll("p").data(function(d,i){return [d.val, d.name]});
-					cells.e = cells.u.enter().append("p");
-					cells.eu = cells.e.merge(cells.u).style("float",function(d,i){return i==0 ? "right" : "left"})
-									.html(function(d,i){return d})
-									.style("margin","5px 5px 2px 5px")
-									.style("line-height","1em")
-									.style("font-size","0.8em");
+					var tableWrapEnter = tableWrap.enter()
+												  .append("div")
+												  .classed("table-wrap",true)
+												  .style("padding","5px 0px")
+						   						  .style("border-top","1px solid #aaaaaa");
+
+					var table = tableWrapEnter.append("table")
+									  .style("border-collapse","collapse")
+									  .style("table-layout","fixed");
+								//header
+								table.append("thead").append("tr").selectAll("td").data(["","","Ranks"]).enter()
+													              .append("td")
+													              .attr("colspan", function(d,i){return i==2 ? "2" : "1"})
+													              .text(function(d,i){return d})
+													              .style("font-size","0.8em")
+													              .style("border","0px dotted #aaaaaa")
+													              .style("border-width", function(d,i){
+													              	return i==2 ? "0px 0px 1px 0px" : "0px";
+													              })
+													              .style("text-align","center")
+													              .style("font-weight","normal");
+								table.append("tbody");
+
+
+					var tableRows = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
+
+						return d;
+					});
+
+					var tableCells = tableRows.enter().append("tr").merge(tableRows).selectAll("td").data(function(d,i){
+
+						return d;
+					});
+
+					tableCells.enter().append("td").merge(tableCells)
+						.text(function(d,i){return d})
+						.style("font-size","0.8em")
+						.style("width",function(d,i){
+							var w = ["56%", "20%", "12%", "12%"];
+							return w[i];
+						})
+						.style("text-align", function(d,i,a){
+							if(i==0){
+								var ta = "left";
+							}
+							else if(i==1){
+								var ta = "right";
+							}
+							else{
+								var ta = "center";
+							}
+							return ta;
+						})
+						.style("padding-right", function(d,i){
+							return i==1 ? "10px" : "initial";
+						});
+
+					var note = tip.selectAll("p.table-note").data([1]);
+					note.enter().append("p").classed("table-note",true).merge(note)
+						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
+						.style("font-size","0.8em")
+						.style("font-style","italic");
 
 			}
 
@@ -378,13 +464,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			}
 
-			scope.mouseleave = function(){
-				tiptimer = setTimeout(function(){
-					tip.style("visibility","hidden")
-					   .style("z-index",0);
-					scope.drawHighlights();
-				}, 250);				
-			}
+
 
 			/*scope.cities.on("mousemove", function(d,i){
 				var xy = d3.mouse(scope.wrap.node());
@@ -423,6 +503,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 		return scope;
 	}
 
+	//code is highly specific to big map
 	scope.addTable = function(){
 		if(scope.data){
 
@@ -469,41 +550,77 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				scope.tableWrap.style("height", scope.height+"px");
 			}	
 
+			scope.view = "Map"; //map is default
 			scope.hideTable = function(d,i){
 				wrap.interrupt().transition().style("opacity",0).on("end", function(d,i){
 					wrap.style("display","none");
 				});
+				scope.view = "Map";
 			};
 
 			scope.showTable = function(d,i){
 				scope.resizeTable();
 				wrap.interrupt().style("display","block")
 					.transition().style("opacity",1);
+				scope.view = "Table";
+				try{
+					scope.mouseleave();
+				}
+				catch(e){
+					//no-op
+				}
 			}
 
-			//close.on("mousedown", scope.hideTable);
-
+			scope.wrapMenu.style("padding","1em 1% 0em 1%").style("margin","6em 2% 0em 2%")
+							.style("border-top","1px solid #dddddd");
 
 			var titleBox = scope.wrapMenu.append("div")
-							.style("margin","5em 0px 0px 0px")
+							.style("margin","0em 0px 0px 0px")
 							.style("border-top","0px solid #dddddd");
-			titleBox.append("p").text("Mapping the 123 largest global cities")
+			titleBox.append("p").text("Remapping the 123 largest global cities")
 						.style("font-weight","bold")
 						.style("font-size","1.25em")
-						.style("margin","0px")
+						.style("margin","0px 0px 10px 0px");
 
-			
-			var toggle_buttons = scope.wrapMenu.append("div").style("display","inline-block")
-											   .classed("disable-highlight",true)
+			var legend = titleBox.append("div").selectAll("div").data(gci2016.data.meta.clusters)
+								 .enter().append("div")
+								 .style("display","inline-block")
+								 .style("margin","5px 10px 10px 0px")
+								 .classed("c-fix",true)
+								 .selectAll("div")
+								 .style("height","16px")
+								 .data(function(d,i){
+								 	return [d.cluster, d.name];
+								 })
+								 .enter().append("div")
+								 .style("float","left")
+								 .style("margin","0px 5px 0px 0px")
+								 .style("width",function(d,i){return i==0 ? "16px" : "auto"})
+								 .style("height","16px")
+								 .style("border-radius","8px")
+								 .style("background-color", function(d,i){
+								 	return i==0 ? gci2016.cols[d] : "transparent";
+								 })
+								 .append("p")
+								 .style("font-size","0.8em")
+								 .style("margin","3px 0px 0px 0px")
+								 .style("line-height","1em")
+								 .text(function(d,i){return i==0 ? "" : d})
+								 ;
+
+			var toggle_buttons = scope.wrapMenu.append("div").style("text-align","center")
+											   .append("div").style("display","inline-block")
+											   .classed("disable-highlight c-fix",true)
 											   .style("padding","0px")
-											   .style("margin-top","25px")
+											   .style("margin-top","2em")
 											   .style("border","1px solid #aaaaaa")
 											   .style("border-width","0px 0px 0px 0px")
 
 
 			var buttons = toggle_buttons.selectAll("div").data(["View data as: ","Map","Table"])
 									.enter().append("div").style("cursor",function(d,i){return i==0 ? "default" : "pointer"})
-									.style("padding","1px 6px").style("float","left")
+									.style("padding",function(d,i){return i==0 ? "1px 6px 1px 0px" : "1px 6px"})
+									.style("float","left")
 									.style("border",function(d,i){return i==0 ? "none" : "1px solid #aaaaaa"})
 									.style("margin",function(d,i){return i==0 ? "0px" : "0px 3px"});
 									
@@ -546,12 +663,12 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								.style("top","100%")
 								.style("top","calc(100% + 1px")
 								.style("display","none")
-								.style("background-color","#fafafa")
+								.style("background-color","rgba(250,250,250,0.7)")
 								.style("padding","5px 0px 5px 0px")
 								.style("z-index",100)
-								.style("border","1px solid #aaaaaa")
-								.style("border-width","0px 1px 1px 1px")
-								.classed("disable-highlight",true);
+								.style("border","0px solid #aaaaaa")
+								.style("border-width","0px 0px 0px 0px")
+								.classed("disable-highlight makesans",true);
 			var options_inner = options.append("div");
 
 			var search_data = scope.data.map(function(d,i,a){
@@ -594,7 +711,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					try{
 						scope.disable_mouseover = true;
 						var c = ODAT[OPINDEX].d.code;
-						console.log(ODAT[OPINDEX]);
 						scope.pro_mouseenter(c);
 					}
 					catch(e){
@@ -651,7 +767,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						var alphadiff = a.d.search < b.d.search ? -1 : 1;
 						return diff !== 0 ? diff : alphadiff;
 					});
-					ODAT = O.filter(function(d,i){return d.sort<2 && i<25});
+					ODAT = O.filter(function(d,i){return d.sort<2 && i<15});
 
 					var op_u = options_inner.selectAll("div").data(ODAT);
 					var op_e = op_u.enter().append("div").style("padding","3px")
@@ -675,18 +791,27 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						//search_input.node().value = "";
 						options.style("display","none");
 					});
+					OP.on("mouseenter", function(d,i){
+						OP.style("background-color",function(dd,ii){
+							return i===ii ? "#dddddd" : "transparent";
+						});
+					})
 
-					var warning = options.selectAll("p.warning20").data(ODAT.length==25 ? [1] : []);
-					warning.enter().append("p").classed("warning20",true).text("Results limited to 25")
+					var warning = options.selectAll("p.warning20").data(ODAT.length==15 ? [1] : []);
+					warning.enter().append("p").classed("warning20",true).text("Results limited to 15")
 						.style("font-size","0.8em").style("color","#666666")
 						.style("margin","10px").style("text-align","left").style("font-style","italic");
 					warning.exit().remove();
 
 					options.style("display", ODAT.length>0 ? "block" : "none");
+					options.on("mouseleave", function(d,i){
+						OP.style("background-color","transparent");
+					})
 				});
 
 				search_input.on("blur", function(d,i){
 					focused = false;
+					OPINDEX = -1;
 					//this.value = "";
 					options.style("display","none");
 				});

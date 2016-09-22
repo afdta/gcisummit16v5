@@ -13,7 +13,17 @@ gci2016.dom.fixedframe = d3.select("#gci2016fixedframe");
 gci2016.dom.mapwrap = d3.select("#gci2016mapwrap");
 
 //colors for each cluster 1-7 
-gci2016.cols = ['#cccccc','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f'];
+//gci2016.cols = ['#cccccc','#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f'];
+
+gci2016.cols = ['#cccccc','#FFE151','#a6cee3','#b2df8a','#33a02c','#e31a1c','#036EB0','#fdbf6f'];
+
+//factory china 1 (#FFE151)
+//knowledge cap 2 (#a6cee3)
+//emerging gateways 3 (#b2df8a)
+//asian anchors 4 (#33a02c)
+//global giants 5 (#e31a1c)
+//am. middle 6 (#036EB0)
+//intn'l middle 7 (#fdbf6f)
 
 //register arbitrary scroll events
 gci2016.scroll = {}
@@ -135,7 +145,7 @@ gci2016.placetip = function(tip_node, container_node, xbuffer, fbr){
 
 	try{
 		if(tip_node.style.width == ""){
-			tip_node.style.width = "320px";
+			tip_node.style.width = "360px";
 		};
 	}
 	catch(e){
@@ -233,13 +243,15 @@ gci2016.placetip = function(tip_node, container_node, xbuffer, fbr){
 }
 
 
-gci2016.calc_rank = function(array, accessor, ascending){
+gci2016.calc_rank = function(array, accessor, clusterkey, ascending){
 	var A = !!accessor ? accessor : function(d){return d};
 	var D = !!ascending ? false : true;
-	var R = array.map(function(d,i,a){
+	var Rall = array.map(function(d,i,a){
 		return accessor(d);
 	});
-	R.sort(function(a,b){
+	var Rclusters = null;
+
+	var sortfn = function(a,b){
 		try{
 			var d = a-b;
 			if(d==null){throw "NaN"}
@@ -273,9 +285,22 @@ gci2016.calc_rank = function(array, accessor, ascending){
 		}
 
 		return r;
-	});
+	};
 
-    var rankit = function(value){
+	Rall.sort(sortfn);
+
+	if(!!clusterkey){
+		var Rclusters = d3.nest().key(clusterkey)
+							.rollup(function(a){
+										return a.map(accessor).sort(sortfn);
+									})
+							.object(array);
+	}
+
+    var rankit = function(value, cluster){
+    	//array to rank from
+    	var R = !!cluster ? Rclusters[(cluster+"")] : Rall;
+
 	    try{
 	        var i = R.indexOf(value) + 1;
 	        var rank = (i>0 && value!=null) ? i : "N/A";
@@ -289,7 +314,7 @@ gci2016.calc_rank = function(array, accessor, ascending){
 	        }
 	    }
 	    finally{
-	        return rank;
+	        return {rank: rank, outof:R.length};
 	    }
 	}
 
@@ -317,4 +342,35 @@ gci2016.format.rank = function(r){
         var rth = (mod>10 && mod<20) ? r + "th" : (r + e[f]); //handles exceptions for X11th, X12th, X13th, X14th
     }
     return rth; 
+ }
+
+ //percent change
+ gci2016.format.pct0 = d3.format("+,.0%");
+ gci2016.format.pct1 = d3.format("+,.1%");
+
+ //shares
+ gci2016.format.sh0 = d3.format(",.0%");
+ gci2016.format.sh1 = d3.format(",.1%");
+
+ //numeric
+ gci2016.format.num0 = d3.format(",.0f");
+ gci2016.format.num1 = d3.format(",.1f");
+ gci2016.format.num2 = d3.format(",.2f");
+ gci2016.format.num3 = d3.format(",.3f");
+
+ //USD
+ gci2016.format.doll0 = function(v){return "$" + gci2016.format.num0(v)};
+ gci2016.format.doll1 = function(v){return "$" + gci2016.format.num1(v)};
+
+ //id
+ gci2016.format.id = function(v){return v};
+
+ gci2016.format.fn = function(v, fmt){
+ 	if(gci2016.format.hasOwnProperty(fmt)){
+ 		var fn = gci2016.format[fmt];
+ 	}
+ 	else{
+ 		var fn = gci2016.format.id;
+ 	}
+ 	return v==null ? "N/A" : fn(v);
  }

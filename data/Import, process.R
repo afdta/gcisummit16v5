@@ -35,22 +35,22 @@ nms3$cat <- c(rep("id",3),
               "Economic characteristics")
 nms3$varid <- row.names(nms3)
 nms3$short <- c("metro", "cluster", "cluster name", "GDP", 
-                "GDP per capita", "Productivity", "GDP growth, 2000–15", 
-                "GDP per capita growth, 2000–15", "Productivity growth, 2000–15", 
-                "Traded sector productivity", "FDI per capita", 
-                "FDI", "Research citations", 
+                "GDP per capita", "GDP per worker", "GDP growth, 2000–15", 
+                "GDP per capita growth, 2000–16", "GDP per worker growth, 2000–17", 
+                "Traded sector productivity diff.", "FDI per capita", 
+                "FDI", "Research quality", 
                 "Patents per capita", "VC per capita", 
-                "Higher ed. attainment", 
+                "Higher ed. attain.", 
                 "Air passengers", "Internet speed", "Country", 
                 "lon", "lat", "Population")
 nms3$long <- c("metro", "cluster", "cluster name", "Nominal GDP, 2015", 
-  "Nominal GDP per capita, 2015", "Output per worker, 2015", "Annual average real GDP growth, 2000–2015", 
-  "Annual average real GDP per capita growth, 2000–2015", "Annual average real output per worker growth, 2000–2015", 
-  "Traded sector productivity differential, 2015", "Greenfield foreign direct investment per capita, 2009–2015", 
+  "Nominal GDP per capita, 2015", "GDP per worker, 2015", "Annual average real GDP growth, 2000–2015", 
+  "Annual average real GDP per capita growth, 2000–2016", "Annual average real GDP per worker growth, 2000–2017", 
+  "Traded sector productivity differential (metro versus country), 2015", "Greenfield foreign direct investment per capita, 2009–2015", 
   "Greenfield foreign direct investment, 2009–2015", "Share of publications in the top 10 percent of cited papers, 2010–2013", 
   "Patents per capita, 2008–2012", "Venture capital investments per capita ($1000s), 2006–2015", 
-  "Share of population with tertiary education, most recent year", 
-  "Total aviation passengers, 2014", "Average internet download speed, 2015", "Country", 
+  "Share of population with a tertiary education, most recent year", 
+  "Total aviation passengers, 2014", "Average internet download speed (Mbps), 2015", "Country", 
   "Longitude", "Latitude", "Population")
 
 getNames <- function(varids, varname="long"){
