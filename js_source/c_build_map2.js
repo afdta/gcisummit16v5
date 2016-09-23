@@ -851,28 +851,29 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					.style("padding","0px 1%").style("margin","0% 2%")
 					.style("border-top","1px solid #dddddd").style("padding-top","1em");
 			
-			var close = tableButtonWrap.append("svg")
-							.attr("width", "25")
-							.attr("height", "25")
+			var close = tableButtonWrap.append("div")
+							.style("width", "25px")
+							.style("height", "25px")
 							.style("float","right")
 							.style("margin","0px 0px 35px 25px")
-							.append("g")
-							.style("pointer-events","all")
 							.style("cursor","pointer");
-						close.append("rect")
+
+			
+			var closesvg = close.append("svg");				
+						closesvg.append("rect")
 							.attr("width","25px")
 							.attr("height","25px")
 							.attr("fill","none")
 							.attr("stroke","#333333");
-						close.append("path")
+						closesvg.append("path")
 							.attr("d", "M5,5 l15,15 M5,20 l15,-15")
 							.attr("stroke","#333333")
 							.attr("stroke-width","2")
 							.attr("stroke-linecap","round");
 
 
-			var tableButtonsU = tableButtonWrap.selectAll("div").data(cat_data);
-			var tableButtonsE = tableButtonsU.enter().append("div");
+			var tableButtonsU = tableButtonWrap.selectAll("div.table-button").data(cat_data);
+			var tableButtonsE = tableButtonsU.enter().append("div").classed("table-button",true);
 								tableButtonsE.append("p");
 			var tableButtons = tableButtonsE.merge(tableButtonsU)
 											.style("float","left")
