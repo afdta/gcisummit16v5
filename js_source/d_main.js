@@ -74,7 +74,7 @@
 
 		bigmap.draw("V4")
 			  .addTitle("Remapping the 123 largest global cities")
-			  //.addLegend()
+			  .addLegend()
 			  //.tooltip()
 			  //.addSearch()
 			  //.addTable();
