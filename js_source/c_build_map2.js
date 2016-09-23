@@ -300,13 +300,16 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("pointer-events","none")
 										  .classed("makesans",true);
 
+		alert("IE9 FTW line 303");
+		return null;
+
 		var tipp = gci2016.placetip(tip.node(), scope.wrap.node());
 
 		if(scope.cities){
 			var tiptimer;
 
-			var hdot1 = scope.layers.top.append("circle").attr("stroke-width",0).style("pointer-events","none");
-			var hdot2 = scope.layers.top.append("circle").attr("stroke-width",2).attr("fill","none").style("pointer-events","none");
+			var hdot1 = scope.layers.top.append("circle").attr("stroke-width","0").style("pointer-events","none");
+			var hdot2 = scope.layers.top.append("circle").attr("stroke-width","2").attr("fill","none").style("pointer-events","none");
 
 			scope.drawHighlights = function(attr){
 				if(!!attr){
