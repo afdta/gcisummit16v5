@@ -121,7 +121,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 					.classed("small-labels", true)
 					.style("text-align","center")
 					.style("margin","0px 4px")
-					.style("word-break","nromal");
+					.style("word-break","normal");
 
 			var cat_data = d3.nest().key(function(d,i){return d.cat})
 				.rollup(function(d,i){
