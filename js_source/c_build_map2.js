@@ -326,10 +326,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					hdot1.style("display","none");
 					hdot2.style("display","none");
 				}
-
-						alert("IE9 FTW line 457 -- drawHighlights");
-		return scope;
-
 			}
 
 			scope.mouseleave = function(){
