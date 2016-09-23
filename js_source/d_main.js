@@ -73,11 +73,11 @@
 		var text = gci2016.data.meta.clusters;
 
 		bigmap.draw("V4")
-			  .addTitle("Remapping the 123 largest global cities")
-			  .addLegend()
-			  .tooltip()
-			  .addSearch()
-			  .addTable();
+			  //.addTitle("Remapping the 123 largest global cities")
+			  //.addLegend()
+			  //.tooltip()
+			  //.addSearch()
+			  //.addTable();
 
 		dotplots.each(function(d,i){
 			var thiz = d3.select(this);
