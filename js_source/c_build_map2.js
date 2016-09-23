@@ -327,6 +327,9 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					hdot2.style("display","none");
 				}
 
+						alert("IE9 FTW line 457 -- drawHighlights);
+		return scope;
+
 			}
 
 			scope.mouseleave = function(){
@@ -452,11 +455,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
 						.style("font-size","0.8em")
 						.style("font-style","italic");
-
-			
-					alert("IE9 FTW line 457 -- mouseenter");
-		return scope;
-
 			}
 
 			//programmatic mouseenter based on metro ID
