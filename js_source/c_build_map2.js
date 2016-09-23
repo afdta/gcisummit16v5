@@ -308,9 +308,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var hdot1 = scope.layers.top.append("circle").attr("stroke-width","0").style("pointer-events","none");
 			var hdot2 = scope.layers.top.append("circle").attr("stroke-width","2").attr("fill","none").style("pointer-events","none");
 
-					alert("IE9 FTW line 311");
-		return scope;
-
 			scope.drawHighlights = function(attr){
 				if(!!attr){
 					hdot1.attr("fill",attr.fill)
@@ -455,6 +452,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
 						.style("font-size","0.8em")
 						.style("font-style","italic");
+
+			
+					alert("IE9 FTW line 457 -- mouseenter");
+		return scope;
 
 			}
 
