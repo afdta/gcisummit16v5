@@ -52,6 +52,11 @@
 
 		gci2016.data_vars = data_vars;
 
+		gci2016.cluster_map = {};
+		for(var c=0; c<dat.meta.clusters.length; c++){
+			gci2016.cluster_map[dat.meta.clusters[c].cluster] = dat.meta.clusters[c];
+		}
+
 		if(gci2016.map.geojson){initialDraw()}
 	});
 
@@ -87,8 +92,8 @@
 											   .text(function(d,i){return d})
 												;
 
-			thiz.append("p").text(text[d].name + " by the numbers").style("margin","20px 0px 0px 3%").style("font-weight","bold").style("font-size","1em");
-			thiz.append("p").text("Average performance of each global city type on key competitiveness factors").style("margin","0.5em 0px 30px 3%");
+			thiz.append("p").text("Competitiveness profile: "+text[d].name + " by the numbers").style("margin","20px 0% 0px 3%").style("font-weight","bold").style("font-size","1.2em");
+			thiz.append("p").text("Economic characteristics and competitiveness factors by type of global city").style("margin","0.5em 0px 30px 3%");
 
 			var plot = thiz.append("div");
 

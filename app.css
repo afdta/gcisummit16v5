@@ -213,6 +213,13 @@
 	vertical-align:bottom;
 }
 
+#gci2016wrap .plot-footnote:before{
+	content:"";
+	width:75px;
+	height:9px;
+	border-top:1px solid #dddddd;
+	display:block;
+}
 
 #gci2016fixedframewrap{
 	position:relative;

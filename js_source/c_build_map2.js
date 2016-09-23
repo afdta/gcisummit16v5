@@ -325,7 +325,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			scope.mouseleave = function(){
 				tiptimer = setTimeout(function(){
 					tip.style("visibility","hidden")
-					   .style("z-index",0);
+					   .style("z-index",0)
+					   .style("left","0px");
 					scope.drawHighlights();
 				}, 250);				
 			}
@@ -359,7 +360,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						var valf = gci2016.format.fn(val, D.format);
 						var clusterRank = rnkit(val, d.cluster)
 
-						var row = [D.nameshort, 
+						var row = [D.nameshort2, 
 								   valf, 
 								   (rnkit(val).rank + (I==0 ? "/123" : "")), 
 								   (clusterRank.rank + (I==0 ? "/"+clusterRank.outof : ""))
@@ -427,7 +428,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							if(i==0){
 								var ta = "left";
 							}
-							else if(i==1){
+							else if(i==1 || i==2 || i==3){
 								var ta = "right";
 							}
 							else{
@@ -580,9 +581,12 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			titleBox.append("p").text("Remapping the 123 largest global cities")
 						.style("font-weight","bold")
 						.style("font-size","1.25em")
-						.style("margin","0px 0px 10px 0px");
+						.style("margin","0px 0px 10px 0px")
+						.style("text-align","left");
 
-			var legend = titleBox.append("div").selectAll("div").data(gci2016.data.meta.clusters)
+			var legend = titleBox.append("div").style("text-align","left")
+								 .append("div").style("display","inline-block")
+								 .selectAll("div").data(gci2016.data.meta.clusters)
 								 .enter().append("div")
 								 .style("display","inline-block")
 								 .style("margin","5px 10px 10px 0px")

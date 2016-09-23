@@ -361,6 +361,7 @@ gci2016.format.rank = function(r){
  //USD
  gci2016.format.doll0 = function(v){return "$" + gci2016.format.num0(v)};
  gci2016.format.doll1 = function(v){return "$" + gci2016.format.num1(v)};
+ gci2016.format.doll2 = function(v){return "$" + gci2016.format.num2(v)};
 
  //id
  gci2016.format.id = function(v){return v};

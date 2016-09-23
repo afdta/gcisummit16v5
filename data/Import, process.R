@@ -18,9 +18,9 @@ gci$V3 <- V3
 
 #produce a variable map
 nms <- read.csv("~/Projects/Brookings/gci-summit-2016/data/data for interactive 091516.csv", stringsAsFactors = FALSE, na.strings=c("","NA","na"), nrows=1, header=FALSE)
-formats <- c("id","id","id","doll1","doll1","doll1","pct1",
-             "pct1","pct1","num1","doll1", "doll1","sh1","num1",
-             "doll1","sh1","num0","num0")
+formats <- c("id","id","id","doll0","doll0","doll0","pct1",
+             "pct1","pct1","pct1","doll0", "doll0","sh1","num1",
+             "doll2","num1","num0","num0")
 
 nms2 <- as.data.frame(cbind(t(nms),formats)) 
 nms3 <- rbind(nms2, data.frame(V1=c("Country","Longitude","Latitude","Population"), formats=c("id","num5","num5","num0"), row.names=c("V19","V20","V21","V0")))
@@ -43,14 +43,31 @@ nms3$short <- c("metro", "cluster", "cluster name", "GDP",
                 "Higher ed. attain.", 
                 "Air passengers", "Internet speed", "Country", 
                 "lon", "lat", "Population")
-nms3$long <- c("metro", "cluster", "cluster name", "Nominal GDP, 2015", 
-  "Nominal GDP per capita, 2015", "GDP per worker, 2015", "Annual average real GDP growth, 2000–2015", 
-  "Annual average real GDP per capita growth, 2000–2016", "Annual average real GDP per worker growth, 2000–2017", 
-  "Traded sector productivity differential (metro versus country), 2015", "Greenfield foreign direct investment per capita, 2009–2015", 
-  "Greenfield foreign direct investment, 2009–2015", "Share of publications in the top 10 percent of cited papers, 2010–2013", 
-  "Patents per capita, 2008–2012", "Venture capital investments per capita ($1000s), 2006–2015", 
+
+nms3$short2 <- c("metro", "cluster", "cluster name", "GDP (millions PPP$)", 
+                "GDP per capita (ths. PPP$)", "GDP per worker (ths. PPP$)", "GDP growth (ann.), 2000–15", 
+                "GDP per capita growth (ann.), 2000–16", "GDP per worker growth (ann.), 2000–17", 
+                "Traded sector productivity diff.", "FDI per capita (ths.)", 
+                "FDI (millions)", "Research quality", 
+                "Patents per 1,000 inhabitants", "VC per capita (ths.)", 
+                "Higher ed. attain. (%)", 
+                "Air passengers", "Internet speed (Mbps)", "Country", 
+                "lon", "lat", "Population (millions)")
+
+nms3$long <- c("metro", "cluster", "cluster name", "Nominal GDP, 2015 (millions PPP$)", 
+  "Nominal GDP per capita, 2015 (ths. PPP$)", "GDP per worker, 2015 (ths. PPP$)", 
+  "Annual average real GDP growth, 2000–2015", 
+  "Annual average real GDP per capita growth, 2000–2016", 
+  "Annual average real GDP per worker growth, 2000–2017", 
+  "Traded sector productivity differential (metro versus country), 2015", 
+  "Greenfield foreign direct investment per capita, 2009–2015 (ths.)", 
+  "Greenfield foreign direct investment, 2009–2015 (millions)", 
+  "Share of publications in the top 10 percent of cited papers, 2010–2013", 
+  "Patents per 1,000 inhabitants, 2008–2012", 
+  "Venture capital investments per capita (ths.), 2006–2015", 
   "Share of population with a tertiary education, most recent year", 
-  "Total aviation passengers, 2014", "Average internet download speed (Mbps), 2015", "Country", 
+  "Total aviation passengers, 2014", 
+  "Average internet download speed (Mbps), 2015", "Country", 
   "Longitude", "Latitude", "Population")
 
 getNames <- function(varids, varname="long"){
@@ -61,7 +78,7 @@ getNames <- function(varids, varname="long"){
 nmsplit <- split(nms3, nms3$varid)
 
 varlist <- lapply(nmsplit, function(e){
-  return(list(name=e$long, nameshort=e$short, format=e$formats, cat=e$cat, varid=e$varid))
+  return(list(name=e$long, nameshort=e$short, nameshort2=e$short2, format=e$formats, cat=e$cat, varid=e$varid))
 })
 
 #read in descriptions

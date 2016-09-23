@@ -33,7 +33,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 			return r;
 		});
 
-		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, metros:m};
+		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, format:gci2016.format[D.format], metros:m};
 	});
 
 	var draw = {};
@@ -47,7 +47,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 		try{
 			var thisBox = thiz.getBoundingClientRect();
 			var width = thisBox.right - thisBox.left;
-			var lscape = width > 950 ? true : false;
+			var lscape = width > 1020 ? true : false;
 		}
 		catch(e){
 			var lscape = false;
@@ -64,12 +64,13 @@ gci2016.dotPlot = function(cluster, plot_data){
 		}
 	}
 
+	var transitioning = {}; //lookup table indicating which variables have transitioned -- edge case: if a redraw occurs before transition finishes
+
 	draw.setup = function(){
 		wrapper.select("div").remove(); //remove anything there
 		++draw.numdraws;
 
 		var chartwrap = wrapper.append("div").classed("makesans",true).style("position","relative").style("width","100%");
-		var abovechart = chartwrap.append("div").style("height","0px").style("margin","0px");
 		var svg = chartwrap.append("svg").style("height",draw.height+"px").style("width","100%");
 		var main_group = svg.append("g");
 		var anno_group = svg.append("g");
@@ -79,7 +80,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 		var cols = gci2016.cols;
 
 		var anno_dot = anno_group.append("circle").attr("stroke-width","2px");
-		var transitioning = {}; //lookup table indicating which variables have transitioned -- edge case: if a redraw occurs before transition finishes
 
 		if(draw.landscape){
 			var zrange = [-1.7,3.5];
@@ -123,7 +123,13 @@ gci2016.dotPlot = function(cluster, plot_data){
 					.style("margin","0px 4px")
 					.style("word-break","nromal");
 
-			var categories_update = category_container.selectAll("div").data([]);
+			var cat_data = d3.nest().key(function(d,i){return d.cat})
+				.rollup(function(d,i){
+					return {name:d[0].cat, colspan:d.length};
+				})
+				.entries(gci2016.data_vars);
+
+			var categories_update = category_container.selectAll("div").data(cat_data);
 			var categories_enter = categories_update.enter().append("div").style("height","100%");
 			categories_enter.append("div").style("border","1px solid #aaaaaa")
 							.style("border-width",function(d,i){
@@ -135,20 +141,18 @@ gci2016.dotPlot = function(cluster, plot_data){
 							})
 							.style("margin","0px 5px 0px 5px")
 							.style("background",function(d,i){
-								//return "linear-gradient(rgba(255,255,255,0), #e0e0e0)";
-								//return !!d.col ? d.col : "none";
 								return "none";
-								return "#e9e9e9";
 							})
-							.append("p").text(function(d,i){return d.name})
+							.append("p").text(function(d,i){return d.value.name})
 							.style("text-align","center")
 							.style("margin","0px 0px 0px 0px")
-							.style("padding","2px 5px")
-							.style("font-size","13px");
+							.style("padding","3px 5px 2px 5px")
+							.style("font-size","13px")
+							.style("font-weight","bold");
 			var categories = categories_enter.merge(categories_update);
 			categories.style("float","left")
 					.style("width", function(d,i){
-						return (d.colspan*step)+"%";
+						return (d.value.colspan*step)+"%";
 					})
 					.style("margin",function(d,i){
 						if(i===0){
@@ -163,7 +167,9 @@ gci2016.dotPlot = function(cluster, plot_data){
 						return m;
 					});
 
-			main_group.append("line").attr("x1",(halfstep*po)+"%").attr("x2",(100-(halfstep*po))+"%").attr("y1",y(0)).attr("y2",y(0)).attr("stroke","#666666").style("shape-rendering","crispEdges").attr("stroke-width","1px");
+			main_group.append("line").attr("x1",(halfstep*po)+"%").attr("x2",(100-(halfstep*po))+"%")
+									.attr("y1",y(0)).attr("y2",y(0)).attr("stroke","#999999")
+									.style("shape-rendering","crispEdges").attr("stroke-width","1px");
 			
 			/*var axis_labels = axis_label.selectAll("text.avg-label").data([1,2]);
 			axis_labels.enter().append("text").classed("avg-label",true).merge(axis_labels)
@@ -364,6 +370,14 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 		} //end portrait layout
 
+		var plotnote = chartwrap.selectAll("p.plot-footnote").data([1])
+
+		plotnote.enter().append("p").classed("plot-footnote",true).merge(plotnote)
+				.text("Note: The dots in the plot above depict the averages of the normalized metro area values (z-scores) for each global city type. The solid " 
+						+ (draw.landscape ? "horizontal" : "vertical") + " axis line represents the average of the 123 metro areas.")
+				.style("font-size","0.8em")
+				.style("margin","3em 3% 0px 3%");
+
 		var this_group = dots.filter(function(d,i){
 				return d.cluster == cluster;
 			}).raise()
@@ -396,6 +410,8 @@ gci2016.dotPlot = function(cluster, plot_data){
 		var tiperror = false;
 		var mouseenter = function(d,i){
 			var thiz = d3.select(this);
+			var fmt = d.format;
+
 			tiperror = false;
 			try{
 				var circle = thiz.selectAll("circle")
@@ -415,25 +431,68 @@ gci2016.dotPlot = function(cluster, plot_data){
 						.attr("fill","none")
 						.attr("stroke",cols[cluster]);
 				}
-					
-				var rows = [{name:"<b>"+d.varname+"</b>", val:""}].concat(d.metros);
 
-				var text = {};
-				text.u = tooltip.selectAll("div.table-row").data(rows);
-				text.e = text.u.enter().append("div").classed("table-row c-fix",true);
-				text.eu = text.e.merge(text.u);
-				text.eu.style("border",function(d,i){return i==0 ? "1px solid #aaaaaa" : "1px dotted #aaaaaa"})
-					   .style("padding",function(d,i){return i==0 ? "0px 0px 3px 0px" : "0px"})
-					   .style("border-width", "0px 0px 1px 0px");
+				var ranking = gci2016.calc_rank(d.metros, function(d,i){return d.val});
 
-				var cells = {};
-				cells.u = text.eu.selectAll("p").data(function(d,i){return [d.val, d.name]});
-				cells.e = cells.u.enter().append("p");
-				cells.eu = cells.e.merge(cells.u).style("float",function(d,i){return i==0 ? "right" : "left"})
-								.html(function(d,i){return d})
-								.style("margin","5px 5px 2px 5px")
-								.style("line-height","1em")
-								.style("font-size","0.8em")
+				//FROM MAP
+					var title = tooltip.selectAll("p.tip-title")
+									.data(["<b>"+d.varname+"</b>", gci2016.cluster_map[cluster].name]);
+					title.enter().append("p").classed("tip-title",true)
+								 .merge(title).html(function(d,i){return d})
+								 .style("margin","0px 0px 5px 0px")
+								 .style("font-size",function(d,i){return i==0 ? "1" : "0.8em"});
+
+					var tableWrap = tooltip.selectAll("div.table-wrap").data([d.metros]);
+
+					var tableWrapEnter = tableWrap.enter()
+												  .append("div")
+												  .classed("table-wrap",true)
+												  .style("padding","10px 0px")
+						   						  .style("border-top","1px solid #aaaaaa")
+						   						  .style("margin","5px 0px");
+
+					var table = tableWrapEnter.append("table")
+									  .style("border-collapse","collapse")
+									  .style("table-layout","fixed")
+									  .style("width","100%");
+								table.append("tbody");
+
+
+					var tableRows = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
+
+						return d;
+					});
+
+					var tableCells = tableRows.enter().append("tr").merge(tableRows).selectAll("td").data(function(d,i){
+						return [ranking(d.val).rank+". " +d.name, fmt(d.val)];
+					});
+
+					tableCells.enter().append("td").merge(tableCells)
+						.text(function(d,i){return d})
+						.style("font-size","0.8em")
+						.style("width",function(d,i){
+							var w = ["70%", "30%"];
+							return w[i];
+						})
+						.style("text-align", function(d,i,a){
+							if(i==0){
+								var ta = "left";
+							}
+							else if(i==1){
+								var ta = "right";
+							}
+							else{
+								var ta = "center";
+							}
+							return ta;
+						})
+						.style("padding-right", function(d,i){
+							return i==1 ? "10px" : "initial";
+						})
+						.style("border-bottom-style","dotted");
+				//END FROM MAP
+
+
 			}
 			catch(e){
 				tiperror = true;
