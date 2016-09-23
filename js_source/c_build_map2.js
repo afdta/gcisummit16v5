@@ -36,6 +36,12 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 	scope.voro = false; //should the dots be rendered in vornoi polygons
 
+	scope.titleBox = scope.wrapMenu.append("div")
+					.style("margin","0px 0px 0px 0px")
+					.style("border-top","0px solid #dddddd")
+					.style("padding","0px");
+
+
 	//set map dimensions and redraw (if map has been initialized)
 	scope.size = function(){
 		try{var width = scope.width = (typeof map_width == "function" ? map_width.call(scope.wrap.node()) : map_width);}
@@ -504,31 +510,351 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 		return scope;
 	}
 
-	//code is highly specific to big map
+	scope.addTitle = function(title){
+		scope.wrapMenu.style("padding","1em 1% 0em 1%").style("margin","6em 2% 0em 2%")
+					.style("border-top","1px solid #dddddd");
+
+		scope.titleBox.classed("c-fix",true).append("div").style("float","left")
+			.append("p").html(title)
+			.style("font-weight","bold")
+			.style("font-size","1.25em")
+			.style("margin","0px 0px 10px 0px")
+			.style("text-align","left");
+
+		return scope;
+	}
+
+	scope.addLegend = function(){
+		try{
+			/*scope.wrapMenu.append("p").style("display","inline-block")
+							.text("Types: ")
+							.style("height","16px")
+							.style("line-height","16px")
+							.style("margin","5px 5px 0px 0px");*/
+
+			var legend = scope.wrapMenu.append("div")
+						 .style("display","inline-block")
+						 .style("margin-top","0.5em")
+						 .selectAll("div").data(gci2016.data.meta.clusters)
+						 .enter().append("div")
+						 .style("display","inline-block")
+						 .style("margin","5px 10px 10px 0px")
+						 .classed("c-fix",true)
+						 .selectAll("div")
+						 .style("height","16px")
+						 .data(function(d,i){
+						 	return [d.cluster, d.name];
+						 })
+						 .enter().append("div")
+						 .style("float","left")
+						 .style("margin","0px 5px 0px 0px")
+						 .style("width",function(d,i){return i==0 ? "16px" : "auto"})
+						 .style("height","16px")
+						 .style("border-radius","8px")
+						 .style("background-color", function(d,i){
+						 	return i==0 ? gci2016.cols[d] : "transparent";
+						 })
+						 .append("p")
+						 .style("font-size","0.8em")
+						 .style("margin","3px 0px 0px 0px")
+						 .style("line-height","1em")
+						 .text(function(d,i){return i==0 ? "" : d})
+						 ;
+		}
+		catch(e){
+			try{
+				legend.remove();
+			}
+			catch(e){
+				//no-op
+			}
+		}
+
+		return scope;
+	}
+
+	scope.addSearch = function(){
+
+		var search = scope.wrapMenu.append("div").style("text-align","center")
+					.append("div").style("display","inline-block")
+					.style("border-bottom","1px solid #aaaaaa")
+					.style("margin","10px 10px 1px 10px")
+					.style("padding","0px")
+					.style("position","relative")
+					.style("width","40%")
+					.style("min-width","320px");
+		var search_icon = search.append("svg")
+								.style("float","left")
+								.style("width","20px")
+								.style("height","20px");
+			search_icon.append("circle").attr("cx","10px")
+										.attr("cy","10px")
+										.attr("r","6px")
+										.attr("fill","none")
+										.attr("stroke","#666666")
+										.attr("stroke-width","1");
+			search_icon.append("path").attr("d","M14,14 l6,6").attr("stroke","#666666");
+		var search_input = search.append("input").attr("type","text")
+						.style("font-size","1em")
+						.style("line-height","1em")
+						.style("color","#333333")
+						.style("border","none")
+						.style("outline","none")
+						.style("background-color","transparent")
+						.style("height","1em")
+						.style("padding","4px 5px")
+						.style("float","left")
+						.attr("placeholder","metro area search")
+						.style("width","calc(100% - 40px)");
+
+		var options = search.append("div")
+							.style("position","absolute")
+							.style("width","100%")
+							.style("overflow","auto")
+							.style("top","100%")
+							.style("top","calc(100% + 1px")
+							.style("display","none")
+							.style("background-color","rgba(250,250,250,0.65)")
+							.style("padding","5px 0px 5px 0px")
+							.style("z-index",100)
+							.style("border","0px solid #aaaaaa")
+							.style("border-width","0px 0px 0px 0px")
+							.classed("disable-highlight makesans",true);
+		var options_inner = options.append("div");
+
+		var search_data = scope.data.map(function(d,i,a){
+			return {name:d.metro + ", " + d.country, code:d.id, search:(d.metro + " " + d.country).toLowerCase()}
+		});
+
+			var focused = false;
+			var ODAT = [];
+			var OP;
+			var OPINDEX = -1;
+
+			function traverse(up){
+				if(arguments.length==0 || !up){
+					var next = 1;
+				}
+				else{
+					var next = -1;
+				}
+				if(OPINDEX + next >= 0 && OPINDEX + next < ODAT.length){
+					OPINDEX = OPINDEX + next;
+				}
+				else if(OPINDEX >= ODAT.length){
+					OPINDEX = ODAT.length-1;
+				}
+				else if(OPINDEX < 0){
+					OPINDEX = 0;
+				}
+
+				try{
+					OP.style("background-color",function(d,i){
+						return i===OPINDEX ? "#dddddd" : "transparent";
+					});
+				}
+				catch(e){
+
+				}
+			}
+
+			function select(){
+				try{
+					scope.disable_mouseover = true;
+					var c = ODAT[OPINDEX].d.code;
+					scope.pro_mouseenter(c);
+				}
+				catch(e){
+					//no-op
+				}
+			}
+
+			search_input.on("focus", focus);
+			search_input.on("mousedown", focus);
+
+
+			function focus(d,i){
+				focused = true;
+				options.style("display", ODAT.length>0 ? "block" : "none");
+				try{
+					OPINDEX = -1;
+					OP.style("background-color","transparent");
+					scope.mouseleave();
+				}
+				catch(e){
+					//no-op
+				}
+			};
+
+			search_input.on("input", function(d,i){
+				try{
+					scope.mouseleave();
+				}
+				catch(e){
+					
+				}
+
+				var input = this.value.toLowerCase();
+				var regex1 = new RegExp("^"+input);
+				var regex15 = new RegExp(" +"+input);
+				var regex2 = new RegExp(input);
+				var O = search_data.map(function(d,i,a){
+					if(d.search.search(regex1) > -1){
+						var r = {d:d, sort:0}
+					}
+					else if(d.search.search(regex15) > -1){
+						var r = {d:d, sort:0.5}
+					}
+					else if(d.search.search(regex2) > -1){
+						var r = {d:d, sort:1}
+					}
+					else{
+						var r = {d:d, sort:2}
+					}
+					return r;
+				});
+				O.sort(function(a,b){
+					var diff = a.sort - b.sort;
+					var alphadiff = a.d.search < b.d.search ? -1 : 1;
+					return diff !== 0 ? diff : alphadiff;
+				});
+				ODAT = O.filter(function(d,i){return d.sort<2 && i<15});
+
+				var op_u = options_inner.selectAll("div").data(ODAT);
+				var op_e = op_u.enter().append("div").style("padding","3px")
+													 .style("margin","3px 6px")
+													 .style("cursor","pointer")
+													 .style("border-bottom","1px dotted #aaaaaa");
+						   op_e.append("p").style("margin","0px").style("text-align","left")
+						   				   .style("font-size","0.8em");
+				op_u.exit().remove();
+
+				OP = op_e.merge(op_u);
+				OP.select("p").text(function(d,i){return d.d.name});
+				OP.on("mousedown", function(d,i){
+					scope.disable_mouseover = true;
+					try{
+						scope.pro_mouseenter(d.d.code);
+					}
+					catch(e){
+						//no-op
+					}
+					//search_input.node().value = "";
+					options.style("display","none");
+				});
+				OP.on("mouseenter", function(d,i){
+					OPINDEX = i;
+					OP.style("background-color",function(dd,ii){
+						return i===ii ? "#dddddd" : "transparent";
+					});
+				})
+
+				var warning = options.selectAll("p.warning20").data(ODAT.length==15 ? [1] : []);
+				warning.enter().append("p").classed("warning20",true).text("Results limited to 15")
+					.style("font-size","0.8em").style("color","#666666")
+					.style("margin","10px").style("text-align","left").style("font-style","italic");
+				warning.exit().remove();
+
+				options.style("display", ODAT.length>0 ? "block" : "none");
+				options.on("mouseleave", function(d,i){
+					OP.style("background-color","transparent");
+				})
+			});
+
+			search_input.on("blur", function(d,i){
+				focused = false;
+				OPINDEX = -1;
+				//this.value = "";
+				options.style("display","none");
+			});
+
+		search_input.on("keydown", function(d,i){
+			var keycode = d3.event.keyCode;
+			if(keycode=='38'){
+				traverse(true);
+			}
+			else if(keycode=='40'){
+				traverse();
+			}
+			else if(keycode=="13"){
+				select();
+				options.style("display","none");
+			}
+
+		});
+
+
+		return scope;
+	}
+
+
 	scope.addTable = function(){
 		if(scope.data){
 
-			var wrap = scope.tableWrap = scope.wrap.append("div")
-								   .style("height",scope.height+"px")
+			var wrap = scope.tableWrap = scope.outerWrap.append("div")
+								   .style("height","auto")
 								   .style("width","100%")
 								   .style("position","absolute")
 								   .style("display","block")
 								   .style("top","0px")
 								   .style("left","0px")
-								   .style("background-color","rgba(250,250,250,0.85)")
+								   .style("background-color","rgba(250,250,250,1)")
 								   .style("z-index",15)
-								   .style("overflow-y","auto")
+								   .style("overflow-y","hidden")
 								   .style("overflow-x","hidden")
 								   ;
 
-			var tableButtonWrap = wrap.append("div").classed("c-fix",true).style("padding","5px 3%");
+			var data_vars = gci2016.data.meta.vars;
+			var data_org = [
+				{cat:"Economic characteristics", vars:["V4", "V5", "V6"]},
+				{cat:"Economic growth", vars:["V7", "V8", "V9"]},
+				{cat:"Tradable clusters", vars:["V10", "V11", "V12"]},
+				{cat:"Innovation", vars:["V13", "V14", "V15"]},
+				{cat:"Talent", vars:["V16"]},
+				{cat:"Connectivity", vars:["V17","V18"]}
+			];
 
+			var cat_data = data_org.map(function(d,i,a){
+				var r = {cat:d.cat};
+				
+				var row0 = d.vars.map(function(d,i,a){
+					return {
+							valf: data_vars[d].nameshort2, 
+							val: data_vars[d].name,
+							var: d,
+							format: data_vars[d].format
+					}
+				});
 
-			/*
+				var meta = [
+					{valf: "Metro area", val:"Metropolitan area", var:"V1", format:"id"},
+					{valf: "Global city type", val:"Type", var:"V3", format:"id"}
+				]
+
+				row0 = meta.concat(row0);
+
+				var data_rows = gci2016.data.data.vals.metros.map(function(d,i,a){
+					return row0.map(function(v){
+						var val = v.var !== "V1" ? d[v.var] : d.V1 + ", " + d.V19;
+						return {val: val, valf: gci2016.format.fn(val, v.format)};
+					});
+				});
+
+				r.rows = [row0].concat(data_rows);
+
+				return r;
+			});
+
+			
+			var tableButtonWrap = wrap.append("div").classed("c-fix",true)
+					.style("padding","0px 1%").style("margin","0% 2%")
+					.style("border-top","1px solid #dddddd").style("padding-top","1em");
+			
 			var close = tableButtonWrap.append("svg")
 							.style("width", "25px")
 							.style("height", "25px")
 							.style("float","right")
+							.style("margin","0px 0px 35px 25px")
 							.append("g")
 							.style("pointer-events","all")
 							.style("cursor","pointer");
@@ -542,14 +868,217 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							.attr("stroke","#333333")
 							.attr("stroke-width","2")
 							.attr("stroke-linecap","round");
-							*/
 
-			
-		
 
-			scope.resizeTable = function(){
-				scope.tableWrap.style("height", scope.height+"px");
-			}	
+			var tableButtonsU = tableButtonWrap.selectAll("div").data(cat_data);
+			var tableButtonsE = tableButtonsU.enter().append("div");
+								tableButtonsE.append("p");
+			var tableButtons = tableButtonsE.merge(tableButtonsU)
+											.style("float","left")
+											.style("padding","5px 10px")
+											.style("border",function(d,i){return i==0 ? "1px solid #aaaaaa" : "1px solid #dddddd"})
+											.style("background-color",function(d,i){return i==0 ? "#dddddd" : "transparent"})
+											.style("margin","0px 8px 5px 0px")
+											.style("cursor","pointer")
+											.classed("disable-highlight",true);
+											
+			var tableButtonsP = tableButtons.select("p")
+											.text(function(d,i){return d.cat})
+											.style("margin","0px")
+											.style("font-size", "13px")
+											.style("line-height", "13px");
+
+			var redrawTable = function(data){
+				var numvars = data.rows[0].length;
+
+				if(numvars == 5){
+					var tdwidths = [25, 20, 19, 19, 17];
+				}
+				else if(numvars == 4){
+					var tdwidths = [25, 25, 25, 25];
+				}
+				else if(numvars == 3){
+					var tdwidths = [35, 50, 25];
+				}
+
+
+				var table_wraps = wrap.selectAll("div.table-wrapper").data([data]);
+					table_wraps.exit().remove();
+
+				var table_sections = table_wraps.enter().append("div").classed("table-wrapper",true)
+											.style("padding","0px 3%")
+											.merge(table_wraps)
+											.selectAll("div")
+											.data(function(d,i){
+												return [[d.rows[0]], d.rows.slice(1)];
+											});
+				var table_sections_enter = table_sections.enter()
+					.append("div")
+					.style("overflow-y", function(d,i){return i==1 ? "auto" : "hidden"})
+					.style("border-bottom","1px solid #aaaaaa")
+					
+					table_sections_enter.append("table")
+						.style("width","100%")
+						.style("table-layout","fixed")
+						.style("border-collapse","collapse");
+
+				var two_table_sections = table_sections_enter.merge(table_sections);
+				var two_tables = two_table_sections.select("table");
+
+				var table_rows_u = two_tables
+					.selectAll("tr").data(function(d,i){
+						return d;
+					});
+					table_rows_u.exit().remove();
+
+				var table_rows = table_rows_u.enter().append("tr").merge(table_rows_u);
+
+				var table_cells_update = table_rows.selectAll("td").data(function(d,i){
+												return d;
+											});
+					table_cells_update.exit().remove();
+
+				var table_cells = table_cells_update.enter().append("td")
+										.merge(table_cells_update)
+										.text(function(d,i){return d.valf})
+										.style("border-bottom",function(d,i){
+											return d.hasOwnProperty("format") ? "none" : "1px dotted #aaaaaa"
+										})
+										.style("width", function(d,i){
+											return tdwidths[i]+"%";
+										})
+										.style("text-align", function(d,i){
+											return i>1 ? "right" : "left";
+										})
+										.style("padding","2px 6px 1px 3px")
+										;
+
+				//references to tables
+				var t1 = two_tables.filter(function(d,i){return i==0}); 
+				var t2 = two_tables.filter(function(d,i){return i==1});
+				var t2rows = t2.selectAll("tr");
+
+				var sort = {i:0, asc:false};
+				var sortfn = function(i){
+					if(i==sort.i){
+						sort.asc = !sort.asc;
+					}
+					else if(i<2){
+						sort.i = i;
+						sort.asc = true;
+					}
+					else{
+						sort.i = i;
+						sort.asc = false;
+					}
+
+					return function(a,b){
+						var va = a[i].val;
+						var vb = b[i].val;
+
+						if(va==vb){
+							var c = a[0].val < b[0].val ? -1 : 1; //use name as tiebreak
+						}
+						else if(va==null){
+							var c = 1;
+						}
+						else if(vb==null){
+							var c = -1;
+						}
+						else if(va < vb){
+							var c = sort.asc ? -1 : 1;
+						}
+						else{
+							var c = sort.asc ? 1 : -1;
+						}
+						return c;
+					}
+				}
+
+				t2rows.sort(sortfn(0));
+				
+				try{
+					two_table_sections.each(function(d,i){
+						if(i==1){
+							this.scrollTop = 0;
+						}
+					});
+				}
+				catch(e){
+					//no-op
+				}
+
+				var header_cells = t1.selectAll("td")
+									.style("font-weight","bold")
+									.style("cursor","pointer")
+									.classed("disable-highlight",true)
+									.on("mousedown",function(d,i){
+										var s = sortfn(i);
+										t2rows.sort(s);
+									});
+
+				scope.resizeTable = function(){
+					setTimeout(function(){
+						try{
+							var box = scope.outerWrap.node().getBoundingClientRect();
+							
+							
+							
+							
+							var t1box = t1.node().getBoundingClientRect();
+							
+							//row 1 of second table
+							var r1 = t2.selectAll("tr").node();
+							var r1box = r1.getBoundingClientRect();
+							var r1width = Math.round(r1box.right - r1box.left);
+
+							two_tables.filter(function(d,i){return i==0}).style("width", r1width + "px");
+
+
+							var boxh = Math.round(box.bottom - box.top);
+							var h = boxh - (t1box.bottom-box.top);
+							var w = box.right - box.left;
+							if(w > 900){
+								var fs = "1em";
+							}
+							else if(w > 500){
+								var fs = "0.8em";
+							}
+							else{
+								var fs = "0.65em";
+							}
+
+							table_cells.style("font-size", fs);
+							//console.log(scope.outerWrap.node());
+							//console.log(t2.node())
+							if(h < 250){throw "badH"}
+							
+							two_table_sections.style("height",function(d,i){return i==1 ? h+"px" : "auto"});
+						}
+						catch(e){
+							two_table_sections.style("height","auto");
+						}
+
+					},0);
+				}
+
+				scope.resizeTable();
+			}
+
+			var selectedTable = 0;
+			var drawTable = function(index){
+				selectedTable = index;
+				tableButtons.style("border",function(d,i){return i==index ? "1px solid #aaaaaa" : "1px solid #dddddd"})
+							.style("background-color",function(d,i){return i==index ? "#dddddd" : "transparent"})
+				redrawTable(cat_data[selectedTable]);
+			}
+
+			drawTable(selectedTable);
+
+			tableButtons.on("mousedown",function(d,i){
+				selectedTable = i;
+				drawTable(i);
+			})	
 
 			scope.view = "Map"; //map is default
 			scope.hideTable = function(d,i){
@@ -560,10 +1089,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			};
 
 			scope.showTable = function(d,i){
-				scope.resizeTable();
 				wrap.interrupt().style("display","block")
 					.transition().style("opacity",1);
 				scope.view = "Table";
+				scope.resizeTable();
 				try{
 					scope.mouseleave();
 				}
@@ -572,51 +1101,12 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				}
 			}
 
-			scope.wrapMenu.style("padding","1em 1% 0em 1%").style("margin","6em 2% 0em 2%")
-							.style("border-top","1px solid #dddddd");
 
-			var titleBox = scope.wrapMenu.append("div")
-							.style("margin","0em 0px 0px 0px")
-							.style("border-top","0px solid #dddddd");
-			titleBox.append("p").text("Remapping the 123 largest global cities")
-						.style("font-weight","bold")
-						.style("font-size","1.25em")
-						.style("margin","0px 0px 10px 0px")
-						.style("text-align","left");
-
-			var legend = titleBox.append("div").style("text-align","left")
-								 .append("div").style("display","inline-block")
-								 .selectAll("div").data(gci2016.data.meta.clusters)
-								 .enter().append("div")
-								 .style("display","inline-block")
-								 .style("margin","5px 10px 10px 0px")
-								 .classed("c-fix",true)
-								 .selectAll("div")
-								 .style("height","16px")
-								 .data(function(d,i){
-								 	return [d.cluster, d.name];
-								 })
-								 .enter().append("div")
-								 .style("float","left")
-								 .style("margin","0px 5px 0px 0px")
-								 .style("width",function(d,i){return i==0 ? "16px" : "auto"})
-								 .style("height","16px")
-								 .style("border-radius","8px")
-								 .style("background-color", function(d,i){
-								 	return i==0 ? gci2016.cols[d] : "transparent";
-								 })
-								 .append("p")
-								 .style("font-size","0.8em")
-								 .style("margin","3px 0px 0px 0px")
-								 .style("line-height","1em")
-								 .text(function(d,i){return i==0 ? "" : d})
-								 ;
-
-			var toggle_buttons = scope.wrapMenu.append("div").style("text-align","center")
+			var toggle_buttons = scope.titleBox.append("div").style("float","right")
 											   .append("div").style("display","inline-block")
 											   .classed("disable-highlight c-fix",true)
 											   .style("padding","0px")
-											   .style("margin-top","2em")
+											   .style("margin","0em")
 											   .style("border","1px solid #aaaaaa")
 											   .style("border-width","0px 0px 0px 0px")
 
@@ -632,209 +1122,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							   		.style("margin","3px 0px")
 							   		.style("line-height","1em");
 
-			var search = toggle_buttons.append("div")
-								.style("border-bottom","1px solid #aaaaaa").style("float","left")
-								.style("margin","1px 10px")
-								.style("padding","0px")
-								.style("position","relative");
-			var search_icon = search.append("svg")
-									.style("float","left")
-									.style("width","20px")
-									.style("height","20px");
-				search_icon.append("circle").attr("cx","10px")
-											.attr("cy","10px")
-											.attr("r","6px")
-											.attr("fill","none")
-											.attr("stroke","#666666")
-											.attr("stroke-width","1");
-				search_icon.append("path").attr("d","M14,14 l6,6").attr("stroke","#666666");
-			var search_input = search.append("input").attr("type","text")
-							.style("font-size","1em")
-							.style("line-height","1em")
-							.style("color","#333333")
-							.style("border","none")
-							.style("outline","none")
-							.style("background-color","transparent")
-							.style("height","1em")
-							.style("padding","4px 5px")
-							.style("float","left")
-							.attr("placeholder","metro area search");
 
-			var options = search.append("div")
-								.style("position","absolute")
-								.style("width","100%")
-								.style("overflow","auto")
-								.style("top","100%")
-								.style("top","calc(100% + 1px")
-								.style("display","none")
-								.style("background-color","rgba(250,250,250,0.7)")
-								.style("padding","5px 0px 5px 0px")
-								.style("z-index",100)
-								.style("border","0px solid #aaaaaa")
-								.style("border-width","0px 0px 0px 0px")
-								.classed("disable-highlight makesans",true);
-			var options_inner = options.append("div");
-
-			var search_data = scope.data.map(function(d,i,a){
-				return {name:d.metro + ", " + d.country, code:d.id, search:(d.metro + " " + d.country).toLowerCase()}
-			});
-
-				var focused = false;
-				var ODAT = [];
-				var OP;
-				var OPINDEX = -1;
-
-				function traverse(up){
-					if(arguments.length==0 || !up){
-						var next = 1;
-					}
-					else{
-						var next = -1;
-					}
-					if(OPINDEX + next >= 0 && OPINDEX + next < ODAT.length){
-						OPINDEX = OPINDEX + next;
-					}
-					else if(OPINDEX >= ODAT.length){
-						OPINDEX = ODAT.length-1;
-					}
-					else if(OPINDEX < 0){
-						OPINDEX = 0;
-					}
-
-					try{
-						OP.style("background-color",function(d,i){
-							return i===OPINDEX ? "#dddddd" : "transparent";
-						});
-					}
-					catch(e){
-
-					}
-				}
-
-				function select(){
-					try{
-						scope.disable_mouseover = true;
-						var c = ODAT[OPINDEX].d.code;
-						scope.pro_mouseenter(c);
-					}
-					catch(e){
-						//no-op
-					}
-				}
-
-				search_input.on("focus", focus);
-				search_input.on("mousedown", focus);
-
-
-				function focus(d,i){
-					focused = true;
-					options.style("display", ODAT.length>0 ? "block" : "none");
-					try{
-						OPINDEX = -1;
-						OP.style("background-color","transparent");
-						scope.mouseleave();
-					}
-					catch(e){
-						//no-op
-					}
-				};
-
-				search_input.on("input", function(d,i){
-					try{
-						scope.mouseleave();
-					}
-					catch(e){
-						
-					}
-
-					var input = this.value.toLowerCase();
-					var regex1 = new RegExp("^"+input);
-					var regex15 = new RegExp(" +"+input);
-					var regex2 = new RegExp(input);
-					var O = search_data.map(function(d,i,a){
-						if(d.search.search(regex1) > -1){
-							var r = {d:d, sort:0}
-						}
-						else if(d.search.search(regex15) > -1){
-							var r = {d:d, sort:0.5}
-						}
-						else if(d.search.search(regex2) > -1){
-							var r = {d:d, sort:1}
-						}
-						else{
-							var r = {d:d, sort:2}
-						}
-						return r;
-					});
-					O.sort(function(a,b){
-						var diff = a.sort - b.sort;
-						var alphadiff = a.d.search < b.d.search ? -1 : 1;
-						return diff !== 0 ? diff : alphadiff;
-					});
-					ODAT = O.filter(function(d,i){return d.sort<2 && i<15});
-
-					var op_u = options_inner.selectAll("div").data(ODAT);
-					var op_e = op_u.enter().append("div").style("padding","3px")
-														 .style("margin","3px 6px")
-														 .style("cursor","pointer")
-														 .style("border-bottom","1px dotted #aaaaaa");
-							   op_e.append("p").style("margin","0px").style("text-align","left")
-							   				   .style("font-size","0.8em");
-					op_u.exit().remove();
-
-					OP = op_e.merge(op_u);
-					OP.select("p").text(function(d,i){return d.d.name});
-					OP.on("mousedown", function(d,i){
-						scope.disable_mouseover = true;
-						try{
-							scope.pro_mouseenter(d.d.code);
-						}
-						catch(e){
-							//no-op
-						}
-						//search_input.node().value = "";
-						options.style("display","none");
-					});
-					OP.on("mouseenter", function(d,i){
-						OP.style("background-color",function(dd,ii){
-							return i===ii ? "#dddddd" : "transparent";
-						});
-					})
-
-					var warning = options.selectAll("p.warning20").data(ODAT.length==15 ? [1] : []);
-					warning.enter().append("p").classed("warning20",true).text("Results limited to 15")
-						.style("font-size","0.8em").style("color","#666666")
-						.style("margin","10px").style("text-align","left").style("font-style","italic");
-					warning.exit().remove();
-
-					options.style("display", ODAT.length>0 ? "block" : "none");
-					options.on("mouseleave", function(d,i){
-						OP.style("background-color","transparent");
-					})
-				});
-
-				search_input.on("blur", function(d,i){
-					focused = false;
-					OPINDEX = -1;
-					//this.value = "";
-					options.style("display","none");
-				});
-
-			search_input.on("keydown", function(d,i){
-				var keycode = d3.event.keyCode;
-				if(keycode=='38'){
-					traverse(true);
-				}
-				else if(keycode=='40'){
-					traverse();
-				}
-				else if(keycode=="13"){
-					select();
-					options.style("display","none");
-				}
-
-			})
-
+			//keep track of views
 			var selected = null;
 			var toggleView = function(d,i){
 				if(i>0 && selected !== d){
@@ -863,6 +1152,9 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			buttons.on("mousedown", toggleView);
 			toggleView("Map", 2);
+			close.on("mousedown", function(){
+				toggleView("Map", 2);
+			});
 		}
 	}
 
