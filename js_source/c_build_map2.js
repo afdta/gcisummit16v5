@@ -296,7 +296,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("background-color","#ffffff")
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
-										  .style("z-index",0)
+										  .style("z-index","0")
 										  .style("pointer-events","none")
 										  .classed("makesans",true);
 
@@ -332,7 +332,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			scope.mouseleave = function(){
 				tiptimer = setTimeout(function(){
 					tip.style("visibility","hidden")
-					   .style("z-index",0)
+					   .style("z-index","0")
 					   .style("left","0px");
 					scope.drawHighlights();
 				}, 250);				
@@ -344,7 +344,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					clearTimeout(tiptimer);
 					var xyn = tipp(xy);
 					tip.style("visibility","visible")
-					   .style("z-index",101)
+					   .style("z-index","101")
 					   .style("top",xyn[1]+"px")
 					   .style("left",xyn[0]+"px");
 				}
@@ -617,7 +617,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							.style("display","none")
 							.style("background-color","rgba(250,250,250,0.65)")
 							.style("padding","5px 0px 5px 0px")
-							.style("z-index",100)
+							.style("z-index","100")
 							.style("border","0px solid #aaaaaa")
 							.style("border-width","0px 0px 0px 0px")
 							.classed("disable-highlight makesans",true);
@@ -800,7 +800,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								   .style("top","0px")
 								   .style("left","0px")
 								   .style("background-color","rgba(250,250,250,1)")
-								   .style("z-index",15)
+								   .style("z-index","15")
 								   .style("overflow-y","hidden")
 								   .style("overflow-x","hidden")
 								   ;

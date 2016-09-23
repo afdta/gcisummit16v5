@@ -388,7 +388,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 		var tooltip = chartwrap.append("div")
 				.style("position","absolute")
-				.style("z-index",25)
+				.style("z-index","25")
 				.style("display","none")
 				.style("min-height","200px")
 				.style("padding","15px")
