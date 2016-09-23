@@ -852,8 +852,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					.style("border-top","1px solid #dddddd").style("padding-top","1em");
 			
 			var close = tableButtonWrap.append("svg")
-							.style("width", "25px")
-							.style("height", "25px")
+							.attr("width", "25")
+							.attr("height", "25")
 							.style("float","right")
 							.style("margin","0px 0px 35px 25px")
 							.append("g")
