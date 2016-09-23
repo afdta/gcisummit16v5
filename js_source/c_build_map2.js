@@ -51,7 +51,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 		var height = scope.height = Math.round(scope.aspect*width);
 
 		scope.projection.translate([width/2, height/2]).scale(scope.scale*(width/1100));
-		scope.svg.style("height",height+"px").style("width",width+"px");
+		scope.svg.attr("height",height+"px").attr("width",width+"px");
 		scope.canvas.attr("height",height+"px").attr("width",width+"px"); //canvas will redraw when resetting these attributes
 	}
 
