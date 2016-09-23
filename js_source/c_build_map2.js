@@ -19,7 +19,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 	scope.wrap = scope.outerWrap.append("div").style("position","relative").style("padding","0px");
 	scope.canvas = scope.wrap.append("canvas").style("position","absolute").style("top","0px").style("left","0px");
 	scope.context = scope.canvas.node().getContext("2d");
-	scope.svg = scope.svgwrap.append("svg").style("position","relative").style("z-index","10");
+	scope.svgwrap = scope.wrap.append("div").style("position","relative").style("z-index","10").style("margin","0px").style("padding","0px");
+	scope.svg = scope.svgwrap.append("svg");
 	scope.layers = {};
 	scope.layers.bottom = scope.svg.append("g");
 	scope.layers.borders = scope.svg.append("g");
@@ -50,7 +51,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 		var height = scope.height = Math.round(scope.aspect*width);
 
 		scope.projection.translate([width/2, height/2]).scale(scope.scale*(width/1100));
-		scope.svg.attr("height",height).attr("width",width);
+		scope.svg.style("height",height+"px").style("width",width+"px");
 		scope.canvas.attr("height",height).attr("width",width); //canvas will redraw when resetting these attributes
 	}
 
