@@ -387,7 +387,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					firstRow.number = 0;
 					var rows = [firstRow].concat(dat);
 
-					console.log(rows);
 
 					var tableWrap = tip.selectAll("div.table-wrap").data([rows]);
 
@@ -396,6 +395,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 												  .classed("table-wrap",true)
 												  .style("padding","5px 0px")
 						   						  .style("border-top","1px solid #aaaaaa");
+
+					console.log("here"); return null;
 
 					var table = tableWrapEnter.append("table")
 									  .style("border-collapse","collapse")
