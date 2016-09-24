@@ -445,7 +445,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							return ta;
 						})
 						.style("padding-right", function(d,i){
-							return i==1 ? "10px" : "auto";
+							return i==1 ? "10px" : "0px";
 						});
 
 					var note = tip.selectAll("p.table-note").data([1]);
