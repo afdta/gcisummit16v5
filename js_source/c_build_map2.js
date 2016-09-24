@@ -1066,8 +1066,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				scope.resizeTable();
 			}
 
-			console.log("here3"); return null;
-
 			var selectedTable = 0;
 			var drawTable = function(index){
 				selectedTable = index;
@@ -1077,6 +1075,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			}
 
 			drawTable(selectedTable);
+
+			console.log("here2"); return null;
 
 			tableButtons.on("mousedown",function(d,i){
 				selectedTable = i;
