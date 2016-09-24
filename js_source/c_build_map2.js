@@ -1099,8 +1099,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				}
 			}
 
-console.log("here1"); return null;
-
 			var toggle_buttons = scope.titleBox.append("div").style("float","right")
 											   .append("div").style("display","inline-block")
 											   .classed("disable-highlight c-fix",true)
@@ -1120,7 +1118,7 @@ console.log("here1"); return null;
 			var buttonText = buttons.append("p").text(function(d,i){return d})
 							   		.style("margin","3px 0px")
 							   		.style("line-height","1em");
-
+console.log("here0"); return null;
 
 			//keep track of views
 			var selected = null;
