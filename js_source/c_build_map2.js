@@ -870,8 +870,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							.attr("stroke","#333333")
 							.attr("stroke-width","2")
 							.attr("stroke-linecap","round");
-						console.log("here3"); return null;
-
 
 			var tableButtonsU = tableButtonWrap.selectAll("div.table-button").data(cat_data);
 			var tableButtonsE = tableButtonsU.enter().append("div").classed("table-button",true);
@@ -1067,6 +1065,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 				scope.resizeTable();
 			}
+
+			console.log("here3"); return null;
 
 			var selectedTable = 0;
 			var drawTable = function(index){
