@@ -427,10 +427,12 @@ gci2016.dotPlot = function(cluster, plot_data){
 				if(transitioning.hasOwnProperty(d.var)){
 					anno_dot.attr("cx", cx)
 						.attr("cy",cy)
-						.attr("r", !transitioning[d.var] ? r : 0)
+						.attr("r", !transitioning[d.var] ? r : "0")
 						.attr("fill","none")
 						.attr("stroke",cols[cluster]);
 				}
+
+				console.log("here"); return null;
 
 				var ranking = gci2016.calc_rank(d.metros, function(d,i){return d.val});
 
@@ -467,7 +469,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 						return [ranking(d.val).rank+". " +d.name, fmt(d.val)];
 					});
 
-					console.log("here"); return null;
 
 					tableCells.enter().append("td").merge(tableCells)
 						.text(function(d,i){return d})
