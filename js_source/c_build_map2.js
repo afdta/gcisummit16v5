@@ -1124,7 +1124,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var toggleView = function(d,i){
 				if(i>0 && selected !== d){
 					selected = d;
-
+console.log("here2"); return null;
 					buttons.style("background-color", function(d,i){
 						return d===selected ? "#dddddd" : "transparent";
 					}).style("border-color", function(d,i){
@@ -1145,8 +1145,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				}
 
 			}
-
-			console.log("here1"); return null;
 
 			buttons.on("mousedown", toggleView);
 			toggleView("Map", 2);
