@@ -375,8 +375,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						return row;
 					});
 
-					console.log(dat);
-
 					var title = tip.selectAll("p.tip-title")
 									.data(["<b>"+d.metro+", "+d.country+"</b>", "Type: " + d.cname]);
 					title.enter().append("p").classed("tip-title",true)
@@ -388,6 +386,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var firstRow = ["Metric", "Value", "Overall", "Within type"];
 					firstRow.number = 0;
 					var rows = [firstRow].concat(dat);
+
+					console.log(rows);
 
 					var tableWrap = tip.selectAll("div.table-wrap").data([rows]);
 
