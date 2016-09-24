@@ -297,7 +297,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
 										  .style("z-index","0")
-										  //.style("pointer-events","none")
+										  .style("pointer-events","none")
 										  .classed("makesans",true);
 
 		var tipp = gci2016.placetip(tip.node(), scope.wrap.node());
@@ -396,7 +396,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 												  .style("padding","5px 0px")
 						   						  .style("border-top","1px solid #aaaaaa");
 
-					console.log("here"); return null;
 
 					var table = tableWrapEnter.append("table")
 									  .style("border-collapse","collapse")
@@ -425,7 +424,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 						return d;
 					});
-
+console.log("here2"); return null;
 					tableCells.enter().append("td").merge(tableCells)
 						.text(function(d,i){return d})
 						.style("font-size","0.8em")
