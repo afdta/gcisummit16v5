@@ -432,9 +432,9 @@ gci2016.dotPlot = function(cluster, plot_data){
 						.attr("stroke",cols[cluster]);
 				}
 
-				console.log("here"); return null;
-
 				var ranking = gci2016.calc_rank(d.metros, function(d,i){return d.val});
+
+								//console.log("here"); return null;
 
 				//FROM MAP
 					var title = tooltip.selectAll("p.tip-title")
@@ -442,7 +442,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 					title.enter().append("p").classed("tip-title",true)
 								 .merge(title).html(function(d,i){return d})
 								 .style("margin","0px 0px 5px 0px")
-								 .style("font-size",function(d,i){return i==0 ? "1" : "0.8em"});
+								 .style("font-size",function(d,i){return i==0 ? "1em" : "0.8em"});
 
 					var tableWrap = tooltip.selectAll("div.table-wrap").data([d.metros]);
 
