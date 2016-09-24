@@ -356,7 +356,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var thiz = d3.select(this);
 					var attr = {fill:thiz.attr("fill"), r:thiz.attr("r"), cx:thiz.attr("cx"), cy:thiz.attr("cy"), stroke:thiz.attr("stroke")};
 					scope.drawHighlights(attr);
-
+console.log(this);
 					//get ranking functions
 					//gci2016.calc_rank = function(array, accessor, ascending){
 
@@ -394,7 +394,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 												  .classed("table-wrap",true)
 												  .style("padding","5px 0px")
 						   						  .style("border-top","1px solid #aaaaaa");
-					console.log("HERE 397");
+
 					var table = tableWrapEnter.append("table")
 									  .style("border-collapse","collapse")
 									  .style("table-layout","fixed");
