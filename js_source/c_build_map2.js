@@ -445,10 +445,9 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 							return ta;
 						})
 						.style("padding-right", function(d,i){
-							return i==1 ? "10px" : "initial";
+							return i==1 ? "10px" : "auto";
 						});
 
-console.log("here2"); return null;
 					var note = tip.selectAll("p.table-note").data([1]);
 					note.enter().append("p").classed("table-note",true).merge(note)
 						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
