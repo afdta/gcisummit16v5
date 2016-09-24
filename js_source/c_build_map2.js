@@ -1118,7 +1118,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var buttonText = buttons.append("p").text(function(d,i){return d})
 							   		.style("margin","3px 0px")
 							   		.style("line-height","1em");
-console.log("here0"); return null;
 
 			//keep track of views
 			var selected = null;
@@ -1146,6 +1145,8 @@ console.log("here0"); return null;
 				}
 
 			}
+
+			console.log("here1"); return null;
 
 			buttons.on("mousedown", toggleView);
 			toggleView("Map", 2);
