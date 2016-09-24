@@ -1023,9 +1023,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						try{
 							var box = scope.outerWrap.node().getBoundingClientRect();
 							
-							
-							
-							
 							var t1box = t1.node().getBoundingClientRect();
 							
 							//row 1 of second table
@@ -1076,8 +1073,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			drawTable(selectedTable);
 
-			console.log("here2"); return null;
-
 			tableButtons.on("mousedown",function(d,i){
 				selectedTable = i;
 				drawTable(i);
@@ -1104,6 +1099,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				}
 			}
 
+console.log("here1"); return null;
 
 			var toggle_buttons = scope.titleBox.append("div").style("float","right")
 											   .append("div").style("display","inline-block")
