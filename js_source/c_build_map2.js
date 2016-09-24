@@ -835,8 +835,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 				row0 = meta.concat(row0);
 
-console.log("here3"); return null;
-
 				var data_rows = gci2016.data.data.vals.metros.map(function(d,i,a){
 					return row0.map(function(v){
 						var val = v.var !== "V1" ? d[v.var] : d.V1 + ", " + d.V19;
@@ -848,6 +846,8 @@ console.log("here3"); return null;
 
 				return r;
 			});
+
+			console.log("here3"); return null;
 
 			
 			var tableButtonWrap = wrap.append("div").classed("c-fix",true)
