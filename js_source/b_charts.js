@@ -487,7 +487,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 							return ta;
 						})
 						.style("padding-right", function(d,i){
-							return i==1 ? "10px" : "initial";
+							return i==1 ? "10px" : "0px";
 						})
 						.style("border-bottom-style","dotted");
 				//END FROM MAP
@@ -514,7 +514,8 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 				var nxy = tipx(xy);
 
-				tooltip.style("display","block").style("top",(nxy[1])+"px").style("left",nxy[0]+"px");
+				tooltip.style("display","block").style("top", Math.round(nxy[1])+"px")
+												.style("left", Math.round(nxy[0])+"px");
 			}
 		};
 
