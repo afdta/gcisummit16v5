@@ -805,7 +805,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								   .style("overflow-x","hidden")
 								   ;
 
-			console.log("here"); return null;
 
 			var data_vars = gci2016.data.meta.vars;
 			var data_org = [
@@ -835,6 +834,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				]
 
 				row0 = meta.concat(row0);
+
+console.log("here2"); return null;
 
 				var data_rows = gci2016.data.data.vals.metros.map(function(d,i,a){
 					return row0.map(function(v){
