@@ -344,8 +344,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var xyn = tipp(xy);
 					tip.style("visibility","visible")
 					   .style("z-index","101")
-					   .style("top",xyn[1]+"px")
-					   .style("left",xyn[0]+"px");
+					   .style("top",Math.round(xyn[1])+"px")
+					   .style("left",Math.round(xyn[0])+"px");
 				}
 				catch(e){
 					scope.mouseleave();
