@@ -480,6 +480,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			scope.cities.on("mouseenter", function(d,i){
 				if(!scope.disable_mouseover){
 					mouseenter.call(this, d, i);
+					console.log("HERE")
 					//var xy = d3.mouse(scope.wrap.node());
 					var dot = d3.select(this);
 					var xy = [+dot.attr("cx"), +dot.attr("cy")];
