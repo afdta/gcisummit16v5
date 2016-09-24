@@ -297,7 +297,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
 										  .style("z-index","0")
-										  .style("pointer-events","none")
+										  //.style("pointer-events","none")
 										  .classed("makesans",true);
 
 		var tipp = gci2016.placetip(tip.node(), scope.wrap.node());
