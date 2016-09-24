@@ -847,7 +847,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				return r;
 			});
 
-			console.log("here3"); return null;
+			console.log("here4"); return null;
 
 			
 			var tableButtonWrap = wrap.append("div").classed("c-fix",true)
