@@ -1080,16 +1080,16 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			scope.view = "Map"; //map is default
 			scope.hideTable = function(d,i){
-				wrap.interrupt().transition().style("opacity",0).on("end", function(d,i){
+				wrap.interrupt().transition().style("opacity","0").on("end", function(d,i){
 					wrap.style("display","none");
 				});
 				scope.view = "Map";
-				console.log("here6"); return null;
+				console.log("here7"); return null;
 			};
 
 			scope.showTable = function(d,i){
 				wrap.interrupt().style("display","block")
-					.transition().style("opacity",1);
+					.transition().style("opacity","1");
 				scope.view = "Table";
 				scope.resizeTable();
 				try{
