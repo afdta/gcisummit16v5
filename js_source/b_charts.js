@@ -467,6 +467,8 @@ gci2016.dotPlot = function(cluster, plot_data){
 						return [ranking(d.val).rank+". " +d.name, fmt(d.val)];
 					});
 
+					console.log("here"); return null;
+
 					tableCells.enter().append("td").merge(tableCells)
 						.text(function(d,i){return d})
 						.style("font-size","0.8em")
