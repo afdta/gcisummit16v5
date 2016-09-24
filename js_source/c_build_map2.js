@@ -582,7 +582,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 		var search = scope.wrapMenu.append("div").style("text-align","center")
 					.append("div").style("display","inline-block")
 					.style("border-bottom","1px solid #aaaaaa")
-					.style("margin","10px 10px 1px 10px")
+					.style("margin","3% 10px 1px 10px")
 					.style("padding","0px")
 					.style("position","relative")
 					.style("width","40%")
