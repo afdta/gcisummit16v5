@@ -1137,14 +1137,15 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 				}
 
-				console.log("here3"); return null;
-
 				if(d=="Map"){
 					scope.hideTable();
 				}
 				else if(d=="Table"){
 					scope.showTable();
 				}
+
+				console.log("here4"); return null;
+
 
 			}
 
