@@ -356,7 +356,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var thiz = d3.select(this);
 					var attr = {fill:thiz.attr("fill"), r:thiz.attr("r"), cx:thiz.attr("cx"), cy:thiz.attr("cy"), stroke:thiz.attr("stroke")};
 					scope.drawHighlights(attr);
-console.log(this);
+
 					//get ranking functions
 					//gci2016.calc_rank = function(array, accessor, ascending){
 
@@ -374,6 +374,8 @@ console.log(this);
 						row.number = I+1
 						return row;
 					});
+
+					console.log(dat);
 
 					var title = tip.selectAll("p.tip-title")
 									.data(["<b>"+d.metro+", "+d.country+"</b>", "Type: " + d.cname]);
