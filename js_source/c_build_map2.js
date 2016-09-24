@@ -248,11 +248,14 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			if(scope.filtered && scope.clusterNumber){
 				c.attr("fill", function(d,i){return d.cluster == scope.clusterNumber ? cols[d.cluster] : "#bbbbbb"})
-			 	 .attr("stroke",function(d,i){return d.cluster == scope.clusterNumber ? d3.rgb(cols[d.cluster]).darker() : "#ffffff"});				
+			 	 .attr("stroke",function(d,i){return d.cluster == scope.clusterNumber ? d3.rgb(cols[d.cluster]).darker().toString() : "#ffffff"});				
 			}
 			else{
 				c.attr("fill", function(d,i){return cols[d.cluster]})
-			 	 .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster]).darker()});	
+			 	 .attr("stroke",function(d,i){
+			 	 	var rgb = d3.rgb(cols[d.cluster]).brighter().toString();
+			 	 	return rgb;
+			 	 });	
 			}
 
 			c.order();
