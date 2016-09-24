@@ -77,7 +77,7 @@
 			  .addLegend()
 			  .tooltip()
 			  .addSearch()
-			  //.addTable();
+			  .addTable();
 
 		dotplots.each(function(d,i){
 			var thiz = d3.select(this);

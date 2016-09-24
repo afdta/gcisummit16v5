@@ -434,8 +434,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 				var ranking = gci2016.calc_rank(d.metros, function(d,i){return d.val});
 
-								//console.log("here"); return null;
-
 				//FROM MAP
 					var title = tooltip.selectAll("p.tip-title")
 									.data(["<b>"+d.varname+"</b>", gci2016.cluster_map[cluster].name]);
