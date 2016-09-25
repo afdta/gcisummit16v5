@@ -383,7 +383,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 			}).raise()
 			  .attr("fill-opacity",0.7)
 			  .attr("fill", function(d,i){return cols[d.cluster]})
-			  .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster]).darker()})
+			  .attr("stroke",function(d,i){return d3.rgb(cols[d.cluster]).darker(0.6).toString()})
 			  .attr("r",10);
 
 		var tooltip = chartwrap.append("div")

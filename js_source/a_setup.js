@@ -1,3 +1,9 @@
+//to do: add descending icons to table view, 
+//review height sizing of table
+
+//remove unused code, styles
+//consider making tool tip wider
+
 //global namespace for interactive
 gci2016 = {};
 
@@ -145,7 +151,7 @@ gci2016.placetip = function(tip_node, container_node, xbuffer, fbr){
 
 	try{
 		if(tip_node.style.width == ""){
-			tip_node.style.width = "360px";
+			tip_node.style.width = "400px";
 		};
 	}
 	catch(e){

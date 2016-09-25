@@ -77,7 +77,8 @@
 			  .addLegend()
 			  .tooltip()
 			  .addSearch()
-			  .addTable();
+			  .addTable()
+			  .addFootnote("Note: Metro area dots are sized according to 2015 GDP.");
 
 		dotplots.each(function(d,i){
 			var thiz = d3.select(this);

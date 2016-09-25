@@ -16,7 +16,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 	//append another div as the wrapper so that the sizing is immune to padding of container
 	scope.outerWrap =  d3.select(container).append("div").style("position","relative").style("padding","0px");
 	scope.wrapMenu = scope.outerWrap.append("div").style("position","relative").style("padding","0px 3%").classed("c-fix",true);
-	scope.wrap = scope.outerWrap.append("div").style("position","relative").style("padding","0px");
+	scope.wrap = scope.outerWrap.append("div").style("position","relative").style("padding","0px").style("z-index","15");
 	scope.canvas = scope.wrap.append("canvas").style("position","absolute").style("top","0px").style("left","0px");
 	scope.context = scope.canvas.node().getContext("2d");
 	//scope.svgwrap = scope.wrap.append("div").style("position","relative").style("z-index","10").style("margin","0px").style("padding","0px");
@@ -248,12 +248,12 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			if(scope.filtered && scope.clusterNumber){
 				c.attr("fill", function(d,i){return d.cluster == scope.clusterNumber ? cols[d.cluster] : "#bbbbbb"})
-			 	 .attr("stroke",function(d,i){return d.cluster == scope.clusterNumber ? d3.rgb(cols[d.cluster]).darker().toString() : "#ffffff"});				
+			 	 .attr("stroke",function(d,i){return d.cluster == scope.clusterNumber ? d3.rgb(cols[d.cluster]).darker(0.6).toString() : "#ffffff"});				
 			}
 			else{
 				c.attr("fill", function(d,i){return cols[d.cluster]})
 			 	 .attr("stroke",function(d,i){
-			 	 	var rgb = d3.rgb(cols[d.cluster]).brighter().toString();
+			 	 	var rgb = d3.rgb(cols[d.cluster]).darker(0.6).toString();
 			 	 	return rgb;
 			 	 });	
 			}
@@ -920,6 +920,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					.append("div")
 					.style("overflow-y", function(d,i){return i==1 ? "auto" : "hidden"})
 					.style("border-bottom","1px solid #aaaaaa")
+					.style("max-height","750px");
 					
 					table_sections_enter.append("table")
 						.style("width","100%")
@@ -961,6 +962,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				var t1 = two_tables.filter(function(d,i){return i==0}); 
 				var t2 = two_tables.filter(function(d,i){return i==1});
 				var t2rows = t2.selectAll("tr");
+				var header_cells = t1.selectAll("td");
 
 				var sort = {i:0, asc:false};
 				var sortfn = function(i){
@@ -975,6 +977,14 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						sort.i = i;
 						sort.asc = false;
 					}
+
+					header_cells
+					.classed("sort-asc", function(d,i){
+						return i==sort.i && sort.asc;
+					})
+					.classed("sort-desc", function(d,i){
+						return i==sort.i && !sort.asc;
+					})
 
 					return function(a,b){
 						var va = a[i].val;
@@ -1012,14 +1022,14 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					//no-op
 				}
 
-				var header_cells = t1.selectAll("td")
-									.style("font-weight","bold")
-									.style("cursor","pointer")
-									.classed("disable-highlight",true)
-									.on("mousedown",function(d,i){
-										var s = sortfn(i);
-										t2rows.sort(s);
-									});
+
+				header_cells.style("font-weight","bold")
+					.style("cursor","pointer")
+					.classed("disable-highlight",true)
+					.on("mousedown",function(d,i){
+						var s = sortfn(i);
+						t2rows.sort(s);
+					});
 
 				scope.resizeTable = function(){
 					setTimeout(function(){
@@ -1083,14 +1093,16 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			scope.view = "Map"; //map is default
 			scope.hideTable = function(d,i){
-				wrap.interrupt().transition().style("opacity","0").on("end", function(d,i){
-					wrap.style("display","none");
-				});
+				wrap.interrupt().transition().style("opacity","0")
+					.on("end", function(d,i){
+						wrap.style("visibility","hidden");
+						wrap.style("z-index","0");
+					});
 				scope.view = "Map";
 			};
 
 			scope.showTable = function(d,i){
-				wrap.interrupt().style("display","block")
+				wrap.interrupt().style("visibility","visible").style("z-index","25")
 					.transition().style("opacity","1");
 				scope.view = "Table";
 				scope.resizeTable();
@@ -1155,6 +1167,23 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				toggleView("Map", 2);
 			});
 		}
+
+		return scope;
+	}
+
+	scope.addFootnote = function(text){
+		var t = [].concat(text);
+		var wrap = scope.outerWrap.append("div").style("padding","0px 3%")
+					   .append("div").classed("center-col",true).style("float","none");
+
+		wrap.selectAll("p").data(t).enter().append("p")
+				.style("font-size","0.8em")
+				.style("color","#666666")
+				.style("margin","0px")
+				.style("text-align","center")
+				.html(function(d,i){return d});
+
+		return scope;
 	}
 
 	return scope;
