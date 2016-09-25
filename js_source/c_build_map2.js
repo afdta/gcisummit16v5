@@ -1,8 +1,6 @@
 gci2016.map = {};
 gci2016.map.geojson = null;
 
-//refine the indicator selection process -- what if no valid indicator is passed?
-//done -- with first round of edits. implement in d_main for debugging
 
 //create a map in the given container
 //map_width is a function or a constant that determines the width of the map -- it is called with the map wrapper as the thisobject
@@ -185,36 +183,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 				});
 			}
 
-			//var nodes = [];
-			//var links = [];
-
 			//mutate each observation by updating projection xy
 			for(var md=0; md<scope.data.length; md++){
 				scope.data[md].xy = scope.projection(scope.data[md].lonlat);
-
-				//add objects to the nodes array for force-layout based label placement -- not implemented
-				//nodes.push({id:mapdata[md].id, metro:mapdata[md].metro, x:mapdata[md].xy[0], y:mapdata[md].xy[1], fx:mapdata[md].xy[0], fy:mapdata[md].xy[1], type:"anchor"});
-				//nodes.push({id:mapdata[md].id, metro:mapdata[md].metro, x:mapdata[md].xy[0], y:mapdata[md].xy[1], ox:mapdata[md].xy[0], oy:mapdata[md].xy[1], type:"text"});
 			}
-
-			//for(var ln=0; ln<nodes.length; ln=ln+2){
-			//	links.push({source:ln, target:ln+1});
-			//}
-
-			/*var sim = d3.forceSimulation(nodes).alphaDecay(0.5)
-				.force("link", d3.forceLink(links).distance(25))
-				//.force("repel", d3.forceManyBody().strength(-40).distanceMax(100))
-				//.force("halo", d3.forceCollide(18))
-
-			sim.on("end", function(){
-				var labels = gci2016.map.layers.cities.selectAll("text.city").data(nodes);
-				var l = labels.enter().append("text").classed("city",true).merge(labels);
-				l.attr("x",function(d,i){return d.x})
-				.attr("y",function(d,i){return d.y})
-				.text(function(d,i){return d.type=="text" ? d.metro : ""});
-
-				console.log(nodes);
-			});*/
 
 			var cities = scope.layers.cities.selectAll("circle.city").data(scope.data);
 			cities.exit().remove();
@@ -360,9 +332,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					var attr = {fill:thiz.attr("fill"), r:thiz.attr("r"), cx:thiz.attr("cx"), cy:thiz.attr("cy"), stroke:thiz.attr("stroke")};
 					scope.drawHighlights(attr);
 
-					//get ranking functions
-					//gci2016.calc_rank = function(array, accessor, ascending){
-
 					var dat = gci2016.data_vars.map(function(D,I,A){
 						var rnkit = gci2016.rankFns[D.varid];
 						var val = d.vals[D.varid];
@@ -475,13 +444,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 			}
 
-
-
-			/*scope.cities.on("mousemove", function(d,i){
-				var xy = d3.mouse(scope.wrap.node());
-				mouse(xy);
-			});*/
-
 			scope.cities.on("mouseenter", function(d,i){
 				if(!scope.disable_mouseover){
 					mouseenter.call(this, d, i);
@@ -530,12 +492,6 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 	scope.addLegend = function(){
 		try{
-			/*scope.wrapMenu.append("p").style("display","inline-block")
-							.text("Types: ")
-							.style("height","16px")
-							.style("line-height","16px")
-							.style("margin","5px 5px 0px 0px");*/
-
 			var legend = scope.wrapMenu.append("div")
 						 .style("display","inline-block")
 						 .style("margin-top","0.5em")
@@ -743,7 +699,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					catch(e){
 						//no-op
 					}
-					//search_input.node().value = "";
+
 					options.style("display","none");
 				});
 				OP.on("mouseenter", function(d,i){
@@ -1188,3 +1144,4 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 	return scope;
 }
+

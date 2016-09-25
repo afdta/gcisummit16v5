@@ -1,5 +1,4 @@
 
-//dotPlot is called with the enclosing dom container element as the this object
 gci2016.dotPlot = function(cluster, plot_data){
 	var thiz = this;
 	var wrapper = d3.select(this).classed("c-fix",true);
@@ -171,16 +170,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 									.attr("y1",y(0)).attr("y2",y(0)).attr("stroke","#999999")
 									.style("shape-rendering","crispEdges").attr("stroke-width","1px");
 			
-			/*var axis_labels = axis_label.selectAll("text.avg-label").data([1,2]);
-			axis_labels.enter().append("text").classed("avg-label",true).merge(axis_labels)
-					.attr("x",(po*halfstep)+"%").attr("y",y(0)+3).text("AVG.")
-					.style("font-size","11px")
-					.attr("text-anchor","start")
-					.attr("dx",-3)
-					.attr("fill",function(d,i){return i==0 ? "#ffffff" : "#666666"})
-					.attr("stroke",function(d,i){return i==0 ? "#ffffff" : "none"})
-					.attr("stroke-width",function(d,i){return i==0 ? "3px" : "0px"});*/
-
 			axis_label.append("line").attr("x1",20)
 									 .attr("x2",140)
 									 .attr("y1",y(0)+15)
@@ -240,7 +229,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 			draw.activate = function(){
 				draw.activated = true;
-				//this_group.transition().transition().duration(1000).attr("r",10);
+
 				dots.transition().duration(700)
 					.attr("cy",function(d,i){return y(d.val)})
 					.on("start", function(d,i){
@@ -260,7 +249,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 		}
 		else{
-			//left off on vertical plot
 			var zrange = [-3.5,3.5];
 			var x = d3.scaleLinear().domain(zrange).range([3, 97]);
 			var y = d3.scaleBand().domain(gci2016.data_vars.map(function(d,i){return d.varid})).range([0,100]).round(false).paddingOuter(0.7).align(0.5);		
@@ -273,11 +261,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 			main_group.append("line").attr("y1","0%").attr("y2","100%")
 									 .attr("x1",x(0)+"%").attr("x2",x(0)+"%")
 									 .attr("stroke","#999999").style("shape-rendering","crispEdges").attr("stroke-width","1px");
-			/*main_group.append("text").attr("x",(po*step)+"%").attr("y",y(0)+3).text("AVG.")
-					.style("font-size","11px")
-					.attr("text-anchor","end")
-					.attr("dx",-3)
-					.attr("fill","#666666");*/
+
 			var groups_update = main_group.selectAll("g").data(dat);
 			var groups_enter = groups_update.enter().append("g").style("pointer-events","all");
 			groups_enter.append("rect")
@@ -320,7 +304,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 						  .attr("stroke-width",function(d,i){return i==0 ? "4px" : "0px"})
 						  ;
 
-			//var axiswrap = abovechart.style("height","20px").style("width","100%").append("svg").style("height","100%").style("width","100%");
 			sub_svg.append("line").attr("x1",0)
 									 .attr("x2",140)
 									 .attr("y1",15)
@@ -350,7 +333,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 			draw.activate = function(){
 				draw.activated = true;
-				//this_group.transition().transition().duration(1000).attr("r",10);
+
 				dots.transition().duration(700)
 					.attr("cx",function(d,i){return x(d.val)+"%"})
 					.on("start", function(d,i){
@@ -434,7 +417,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 
 				var ranking = gci2016.calc_rank(d.metros, function(d,i){return d.val});
 
-				//FROM MAP
 					var title = tooltip.selectAll("p.tip-title")
 									.data(["<b>"+d.varname+"</b>", gci2016.cluster_map[cluster].name]);
 					title.enter().append("p").classed("tip-title",true)
@@ -491,8 +473,6 @@ gci2016.dotPlot = function(cluster, plot_data){
 							return i==1 ? "10px" : "0px";
 						})
 						.style("border-bottom-style","dotted");
-				//END FROM MAP
-
 
 			}
 			catch(e){
@@ -500,14 +480,11 @@ gci2016.dotPlot = function(cluster, plot_data){
 				mouseleave();
 			}
 
-			//.node().getBoundingClientRect();
-			//console.log(box);
 		}
 
 		//fn signature: gci2016.placetip(tip_node, container_node, xbuffer, fbr)
 		var tipx = gci2016.placetip(tooltip.node(), thiz);
 		
-
 		var mouse = function(d,i){
 			if(!tiperror){
 				clearTimeout(tiptimer);
@@ -542,3 +519,4 @@ gci2016.dotPlot = function(cluster, plot_data){
 	};
 	
 }
+

@@ -1,4 +1,8 @@
-(function(){
+gci2016.build = function(){
+
+	//no-op if browser not svg compatible
+	if(!gci2016.browser_compatible){return null}
+
 	var scope = gci2016;
 	var dom = scope.dom;
 
@@ -6,7 +10,6 @@
 					 .enter().append("div").classed("dotplot gcisection",true);
 
 	//signature for map setup: function(container, map_width, register_resize, render_as_canvas)
-	//notes set a max width : 
 	var width_fn = function(){return gci2016.getdim(gci2016.dom.wrapn, 1600).width}
 	var sm_width_fn = function(){
 		try{
@@ -108,21 +111,9 @@
 		});
 	}	
 
-	function scroll(){
-		var bbox = dom.fixedframewrap.node().getBoundingClientRect();
-		if(bbox.top <= 80){
-			dom.fixedframe.style("position","fixed").style("top","80px").style("display","block");
-			d3.select("#dummy-banner").style("display","block").style("top","0px").style("left","0px"); //remove for production
-		}
-		else{
-			dom.fixedframe.style("position","relative").style("top","0px").style("display","none");
-			d3.select("#dummy-banner").style("display","none"); //remove for production
-		}
-	}
-
-	//window.addEventListener("resize", resizer);
-
 	window.addEventListener("scroll", scope.scroll.activateListeners);
-	window.addEventListener("scroll", scroll);
 
-})();
+};
+
+document.addEventListener("DOMContentLoaded", gci2016.build);
+
