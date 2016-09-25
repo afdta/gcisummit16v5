@@ -920,7 +920,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					.append("div")
 					.style("overflow-y", function(d,i){return i==1 ? "auto" : "hidden"})
 					.style("border-bottom","1px solid #aaaaaa")
-					.style("max-height","750px");
+					.style("max-height","700px");
 					
 					table_sections_enter.append("table")
 						.style("width","100%")
