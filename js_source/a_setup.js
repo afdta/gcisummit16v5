@@ -2,7 +2,7 @@
 gci2016 = {};
 
 //directory containing json data file;
-gci2016.repo = "./";
+gci2016.repo = "assets/";
 
 //Browser must support svg
 if(document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
@@ -349,6 +349,8 @@ if(document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicS
 	 gci2016.format.doll0 = function(v){return "$" + gci2016.format.num0(v)};
 	 gci2016.format.doll1 = function(v){return "$" + gci2016.format.num1(v)};
 	 gci2016.format.doll2 = function(v){return "$" + gci2016.format.num2(v)};
+
+	 gci2016.format.dolle30 = function(v){return "$" + gci2016.format.num0(v*1000)};
 
 	 //id
 	 gci2016.format.id = function(v){return v};
