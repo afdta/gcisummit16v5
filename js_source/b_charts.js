@@ -32,7 +32,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 			return r;
 		});
 
-		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, format:gci2016.format[D.format], metros:m};
+		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, varnameshort2:D.nameshort2, format:gci2016.format[D.format], metros:m};
 	});
 
 	var draw = {};
@@ -498,11 +498,15 @@ gci2016.dotPlot = function(cluster, plot_data){
 		};
 
 		groups.on("mouseenter", function(d,i){
-			mouseenter.call(this, d, i);
-			mouse.call(this, d, i);
+			if(d.var !== "V12"){
+				mouseenter.call(this, d, i);
+				mouse.call(this, d, i);
+			}
 		});
 		groups.on("mousemove", function(d,i){
-			mouse.call(this, d, i);
+			if(d.var !== "V12"){
+				mouse.call(this, d, i);
+			}
 		});
 
 		groups.on("mouseleave", mouseleave);	
