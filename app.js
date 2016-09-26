@@ -1811,7 +1811,9 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 
 				var table_cells = table_cells_update.enter().append("td")
 										.merge(table_cells_update)
-										.text(function(d,i){return d.valf})
+										.html(function(d,i){
+											return i==0 ? "<span></span>" + d.valf : d.valf;
+										})
 										.style("border-bottom",function(d,i){
 											return d.hasOwnProperty("format") ? "none" : "1px dotted #aaaaaa"
 										})
@@ -1875,7 +1877,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					}
 				}
 
-				t2rows.sort(sortfn(0));
+				t2rows.sort(sortfn(0)).select("span").text(function(d,i){return (i+1)+"."})
+									  .style("margin-right","5px")
+									  .style("color","#666666")
+									  .style("font-size","0.8em");
 				
 				try{
 					two_table_sections.each(function(d,i){
@@ -1894,7 +1899,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 					.classed("disable-highlight",true)
 					.on("mousedown",function(d,i){
 						var s = sortfn(i);
-						t2rows.sort(s);
+						t2rows.sort(s).select("span").text(function(d,i){return (i+1)+"."});
 					});
 
 				scope.resizeTable = function(){
