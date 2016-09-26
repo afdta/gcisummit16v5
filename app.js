@@ -20,7 +20,7 @@ var e=3*o(r/(vt*rt));return[rt*n/(vt*(2*Fe(2*e/3)-1)),e]},nn.invert=function(n,r
 gci2016 = {};
 
 //directory containing json data file;
-gci2016.repo = "./";
+gci2016.repo = "assets/";
 
 //Browser must support svg
 if(document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1")){
@@ -368,6 +368,8 @@ if(document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicS
 	 gci2016.format.doll1 = function(v){return "$" + gci2016.format.num1(v)};
 	 gci2016.format.doll2 = function(v){return "$" + gci2016.format.num2(v)};
 
+	 gci2016.format.dolle30 = function(v){return "$" + gci2016.format.num0(v*1000)};
+
 	 //id
 	 gci2016.format.id = function(v){return v};
 
@@ -420,7 +422,7 @@ gci2016.dotPlot = function(cluster, plot_data){
 			return r;
 		});
 
-		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, format:gci2016.format[D.format], metros:m};
+		return {dat:s, var:D.varid, varname:D.name, varnameshort:D.nameshort, varnameshort2:D.nameshort2, format:gci2016.format[D.format], metros:m};
 	});
 
 	var draw = {};
@@ -886,11 +888,15 @@ gci2016.dotPlot = function(cluster, plot_data){
 		};
 
 		groups.on("mouseenter", function(d,i){
-			mouseenter.call(this, d, i);
-			mouse.call(this, d, i);
+			if(d.var !== "V12"){
+				mouseenter.call(this, d, i);
+				mouse.call(this, d, i);
+			}
 		});
 		groups.on("mousemove", function(d,i){
-			mouse.call(this, d, i);
+			if(d.var !== "V12"){
+				mouse.call(this, d, i);
+			}
 		});
 
 		groups.on("mouseleave", mouseleave);	
@@ -1175,9 +1181,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("top","0px")
 										  .style("left","0px")
 										  .style("visibility","hidden")
-										  .style("min-width","100px")
+										  .style("min-width","300px")
 										  .style("min-height","100px")
-										  .style("max-width","90%")
+										  .style("width","70%")
+										  .style("max-width","450px")
 										  .style("background-color","#ffffff")
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
@@ -1253,7 +1260,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								   (rnkit(val).rank + (I==0 ? "/123" : "")), 
 								   (clusterRank.rank + (I==0 ? "/"+clusterRank.outof : ""))
 								   ];
-						row.number = I+1
+						row.number = I+1;
+						row.varid = D.varid;
 						return row;
 					});
 
@@ -1297,12 +1305,14 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								table.append("tbody");
 
 
-					var tableRows = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
+					var tableRowsU = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
 
 						return d;
 					});
 
-					var tableCells = tableRows.enter().append("tr").merge(tableRows).selectAll("td").data(function(d,i){
+					var tableRows = tableRowsU.enter().append("tr").merge(tableRowsU);
+
+					var tableCells = tableRows.selectAll("td").data(function(d,i){
 
 						return d;
 					});
@@ -1335,6 +1345,11 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
 						.style("font-size","0.8em")
 						.style("font-style","italic");
+
+					//remove fdi from table
+					tableRows.filter(function(d,i){
+						return d.varid === "V12";
+					}).remove();
 			}
 
 			//programmatic mouseenter based on metro ID
@@ -1679,7 +1694,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var data_org = [
 				{cat:"Economic characteristics", vars:["V4", "V5", "V6"]},
 				{cat:"Economic growth", vars:["V7", "V8", "V9"]},
-				{cat:"Tradable clusters", vars:["V10", "V11", "V12"]},
+				{cat:"Tradable clusters", vars:["V10", "V11"]},
 				{cat:"Innovation", vars:["V13", "V14", "V15"]},
 				{cat:"Talent", vars:["V16"]},
 				{cat:"Connectivity", vars:["V17","V18"]}
@@ -2164,7 +2179,7 @@ gci2016.build = function(){
 												;
 
 			thiz.append("p").text("Competitiveness profile: "+text[d].name + " by the numbers").style("margin","20px 0% 0px 3%").style("font-weight","bold").style("font-size","1.2em");
-			thiz.append("p").text("Economic characteristics and competitiveness factors by type of global city").style("margin","0.5em 0px 30px 3%");
+			thiz.append("p").html('<span style="margin-right:10px">Economic characteristics and competitiveness factors by type of global city.</span> <span style="font-style:italic;">Hover over the plot for details</span>').style("margin","0.5em 0px 30px 3%");
 
 			var plot = thiz.append("div");
 
