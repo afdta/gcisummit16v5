@@ -28,6 +28,13 @@
 	font-weight:bold;
 	margin: 0.8em 0em;
 }
+#gci2016wrap b{
+	font-weight:bold;
+}
+#gci2016wrap ul{
+	list-style-type:disc;
+	padding:0em 0em 0em 2.25em;
+}
 
 #gci2016banner{
 	position:relative;
