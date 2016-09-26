@@ -265,9 +265,10 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 										  .style("top","0px")
 										  .style("left","0px")
 										  .style("visibility","hidden")
-										  .style("min-width","100px")
+										  .style("min-width","300px")
 										  .style("min-height","100px")
-										  .style("max-width","90%")
+										  .style("width","70%")
+										  .style("max-width","450px")
 										  .style("background-color","#ffffff")
 										  .style("border","1px solid #aaaaaa")
 										  .style("padding","15px")
@@ -343,7 +344,8 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								   (rnkit(val).rank + (I==0 ? "/123" : "")), 
 								   (clusterRank.rank + (I==0 ? "/"+clusterRank.outof : ""))
 								   ];
-						row.number = I+1
+						row.number = I+1;
+						row.varid = D.varid;
 						return row;
 					});
 
@@ -387,12 +389,14 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 								table.append("tbody");
 
 
-					var tableRows = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
+					var tableRowsU = tableWrapEnter.merge(tableWrap).select("tbody").selectAll("tr").data(function(d,i){
 
 						return d;
 					});
 
-					var tableCells = tableRows.enter().append("tr").merge(tableRows).selectAll("td").data(function(d,i){
+					var tableRows = tableRowsU.enter().append("tr").merge(tableRowsU);
+
+					var tableCells = tableRows.selectAll("td").data(function(d,i){
 
 						return d;
 					});
@@ -425,6 +429,11 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 						.text("A rank of 1 indicates the largest value in the group of metro areas being compared.")
 						.style("font-size","0.8em")
 						.style("font-style","italic");
+
+					//remove fdi from table
+					tableRows.filter(function(d,i){
+						return d.varid === "V12";
+					}).remove();
 			}
 
 			//programmatic mouseenter based on metro ID
@@ -769,7 +778,7 @@ gci2016.map.setup = function(container, map_width, register_resize, render_as_ca
 			var data_org = [
 				{cat:"Economic characteristics", vars:["V4", "V5", "V6"]},
 				{cat:"Economic growth", vars:["V7", "V8", "V9"]},
-				{cat:"Tradable clusters", vars:["V10", "V11", "V12"]},
+				{cat:"Tradable clusters", vars:["V10", "V11"]},
 				{cat:"Innovation", vars:["V13", "V14", "V15"]},
 				{cat:"Talent", vars:["V16"]},
 				{cat:"Connectivity", vars:["V17","V18"]}
